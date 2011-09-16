@@ -2,6 +2,6 @@
 # stick on a USB port should tell you the exact interface.
 SERIAL = '/dev/ttyUSB0'
 
-# If set to True, the stick's driver will dump everything it read/writes
+# If set to True, the stick's driver will dump everything it reads/writes
 # from/to the stick.
 DEBUG = True

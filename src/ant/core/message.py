@@ -25,8 +25,8 @@
 
 import struct
 
-from codinghyde.ant.exceptions import MessageException
-from codinghyde.ant.constants import *
+from ant.core.exceptions import MessageException
+from ant.core.constants import *
 
 class Message(object):
     def __init__(self, type=0x00, payload=''):

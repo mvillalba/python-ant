@@ -5,8 +5,8 @@ Perform basic node initialization and shutdown cleanly.
 
 import sys
 
-from codinghyde.ant import driver
-from codinghyde.ant import node
+from ant.core import driver
+from ant.core import node
 
 from config import *
 

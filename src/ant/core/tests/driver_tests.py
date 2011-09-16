@@ -25,7 +25,7 @@
 
 import unittest
 
-from codinghyde.ant.driver import *
+from ant.core.driver import *
 
 class DummyDriver(Driver):
     def _open(self):

@@ -5,8 +5,8 @@ Interrogate stick for supported capabilities.
 
 import sys
 
-from codinghyde.ant import driver
-from codinghyde.ant import node
+from ant.core import driver
+from ant.core import node
 
 from config import *
 

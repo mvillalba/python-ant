@@ -25,7 +25,7 @@
 
 import unittest
 
-from codinghyde.ant.message import *
+from ant.core.message import *
 
 class MessageTest(unittest.TestCase):
     def setUp(self):

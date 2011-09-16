@@ -6,9 +6,9 @@ Do a system reset using raw messages.
 import sys
 import time
 
-from codinghyde.ant import driver
-from codinghyde.ant import message
-from codinghyde.ant.constants import *
+from ant.core import driver
+from ant.core import message
+from ant.core.constants import *
 
 from config import *
 

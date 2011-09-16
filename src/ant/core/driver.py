@@ -25,7 +25,7 @@
 
 import serial
 
-from codinghyde.ant.exceptions import DriverException
+from ant.core.exceptions import DriverException
 
 class Driver(object):
     def __init__(self, device, debug=False):

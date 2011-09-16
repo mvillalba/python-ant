@@ -56,7 +56,7 @@ class DriverTest(unittest.TestCase):
 
     def test_open(self):
         self.driver.open()
-        self.assertRaises(DriverException, self.driver.open)
+        self.assertRaises(DriverError, self.driver.open)
         self.driver.close()
 
     def test_close(self):
@@ -64,17 +64,17 @@ class DriverTest(unittest.TestCase):
 
     def test_read(self):
         self.assertFalse(self.driver.isOpen())
-        self.assertRaises(DriverException, self.driver.read, 1)
+        self.assertRaises(DriverError, self.driver.read, 1)
         self.driver.open()
         self.assertEqual(len(self.driver.read(5)), 5)
-        self.assertRaises(DriverException, self.driver.read, -1)
-        self.assertRaises(DriverException, self.driver.read, 0)
+        self.assertRaises(DriverError, self.driver.read, -1)
+        self.assertRaises(DriverError, self.driver.read, 0)
         self.driver.close()
 
     def test_write(self):
-        self.assertRaises(DriverException, self.driver.write, '\xFF')
+        self.assertRaises(DriverError, self.driver.write, '\xFF')
         self.driver.open()
-        self.assertRaises(DriverException, self.driver.write, '')
+        self.assertRaises(DriverError, self.driver.write, '')
         self.assertEquals(self.driver.write('\xFF' * 10), 10)
         self.driver.close()
 

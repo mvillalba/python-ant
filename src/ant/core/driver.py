@@ -25,7 +25,7 @@
 
 import serial
 
-from ant.core.exceptions import DriverException
+from ant.core.exceptions import DriverError
 
 class Driver(object):
     def __init__(self, device, debug=False):
@@ -38,23 +38,23 @@ class Driver(object):
 
     def open(self):
         if self.isOpen():
-            raise DriverException("Could not open device (already open).")
+            raise DriverError("Could not open device (already open).")
 
         self._open()
         self.is_open = True
 
     def close(self):
         if not self.isOpen():
-            raise DriverException("Could not close device (not open).")
+            raise DriverError("Could not close device (not open).")
 
         self._close()
         self.is_open = False
 
     def read(self, count):
         if not self.isOpen():
-            raise DriverException("Could not read from device (not open).")
+            raise DriverError("Could not read from device (not open).")
         if count <= 0:
-            raise DriverException("Could not read from device (zero request).")
+            raise DriverError("Could not read from device (zero request).")
 
         data = self._read(count)
 
@@ -65,9 +65,9 @@ class Driver(object):
 
     def write(self, data):
         if not self.isOpen():
-            raise DriverException("Could not write to device (not open).")
+            raise DriverError("Could not write to device (not open).")
         if len(data) <= 0:
-            raise DriverException("Could not write to device (no data).")
+            raise DriverError("Could not write to device (no data).")
 
         if self.debug:
             self._dump(data, 'WRITE')
@@ -91,16 +91,16 @@ class Driver(object):
         print ''
 
     def _open(self):
-        raise DriverException("Not Implemented")
+        raise DriverError("Not Implemented")
 
     def _close(self):
-        raise DriverException("Not Implemented")
+        raise DriverError("Not Implemented")
 
     def _read(self, count):
-        raise DriverException("Not Implemented")
+        raise DriverError("Not Implemented")
 
     def _write(self, data):
-        raise DriverException("Not Implemented")
+        raise DriverError("Not Implemented")
 
 class USB1Driver(Driver):
     def __init__(self, device, baud_rate=115200, debug=False):
@@ -111,10 +111,10 @@ class USB1Driver(Driver):
         try:
             dev = serial.Serial(self.device, self.baud)
         except serial.SerialException, e:
-            raise DriverException(str(e))
+            raise DriverError(str(e))
 
         if not dev.isOpen():
-            raise DriverException('Could not open device')
+            raise DriverError('Could not open device')
 
         self._serial = dev
         self._serial.timeout = 0.01
@@ -130,6 +130,6 @@ class USB1Driver(Driver):
             count = self._serial.write(data)
             self._serial.flush()
         except serial.SerialTimeoutException, e:
-            raise DriverException(str(e))
+            raise DriverError(str(e))
 
         return count

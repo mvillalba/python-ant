@@ -25,7 +25,7 @@
 
 import struct
 
-from ant.core.exceptions import MessageException
+from ant.core.exceptions import MessageError
 from ant.core.constants import *
 
 class Message(object):
@@ -38,7 +38,7 @@ class Message(object):
 
     def setPayload(self, payload):
         if len(payload) > 9:
-            raise MessageException(
+            raise MessageError(
                   'Could not set payload (payload too long).')
 
         self.payload = payload
@@ -48,7 +48,7 @@ class Message(object):
 
     def setType(self, type):
         if (type > 0xFF) or (type < 0x00):
-            raise MessageException('Could not set type (type out of range).')
+            raise MessageError('Could not set type (type out of range).')
 
         self.type = type
 
@@ -79,15 +79,15 @@ class Message(object):
     def decode(self, raw):
         sync, length, type = struct.unpack('BBB', raw[:3])
         if sync != MESSAGE_TX_SYNC:
-            raise MessageException('Could not decode (expected TX sync).')
+            raise MessageError('Could not decode (expected TX sync).')
         if length > 9:
-            raise MessageException('Could not decode (payload too long).')
+            raise MessageError('Could not decode (payload too long).')
 
         self.setType(type)
         self.setPayload(raw[3:length + 3])
 
         if self.getChecksum() != ord(raw[length + 3]):
-            raise MessageException('Could not decode (bad checksum).')
+            raise MessageError('Could not decode (bad checksum).')
 
         return self.getSize()
 
@@ -101,7 +101,7 @@ class ChannelMessage(Message):
 
     def setChannelNumber(self, number):
         if (number > 0xFF) or (number < 0x00):
-            raise MessageException('Could not set channel number ' \
+            raise MessageError('Could not set channel number ' \
                                    '(out of range).')
 
         self.payload[0] = chr(number)

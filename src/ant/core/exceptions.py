@@ -26,8 +26,8 @@
 class ANTException(Exception):
     pass
 
-class DriverException(ANTException):
+class DriverError(ANTException):
     pass
 
-class MessageException(ANTException):
+class MessageError(ANTException):
     pass

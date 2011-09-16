@@ -32,13 +32,13 @@ class MessageTest(unittest.TestCase):
         self.message = Message()
 
     def test_setPayload(self):
-        self.assertRaises(MessageException, self.message.setPayload,
+        self.assertRaises(MessageError, self.message.setPayload,
                           '\xFF' * 15)
         self.assertTrue(self.message.setPayload('\x11') is None)
 
     def test_setType(self):
-        self.assertRaises(MessageException, self.message.setType, -1)
-        self.assertRaises(MessageException, self.message.setType, 300)
+        self.assertRaises(MessageError, self.message.setType, -1)
+        self.assertRaises(MessageError, self.message.setType, 300)
         self.assertTrue(self.message.setType(0x23) is None)
 
     def test_getChecksum(self):
@@ -55,7 +55,7 @@ class MessageTest(unittest.TestCase):
                          '\xA4\x03\x42\x00\x00\x00\xE5')
 
     def test_decode(self):
-        self.assertRaises(MessageException, self.message.decode,
+        self.assertRaises(MessageError, self.message.decode,
                           '\xA5\x03\x42\x00\x00\x00\xE5')
         self.assertEqual(self.message.decode('\xA4\x03\x42\x00\x00\x00\xE5'),
                          7)

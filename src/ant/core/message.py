@@ -264,3 +264,57 @@ class ChannelRequestMessage(ChannelMessage):
         self.setPayload(self.getPayload()[0] +
                         chr(message_id) +
                         self.getPayload()[2:])
+
+class RequestMessage(ChannelRequestMessage):
+    pass
+
+# Data messages
+class ChannelBroadcastDataMessage(ChannelMessage):
+    def __init__(self, number=0x00, data='\x00' * 7):
+        ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_BROADCAST_DATA,
+                                payload=data, number=number)
+
+class ChannelAcknowledgedDataMessage(ChannelMessage):
+    def __init__(self, number=0x00, data='\x00' * 7):
+        ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_ACKNOWLEDGED_DATA,
+                                payload=data, number=number)
+
+class ChannelBurstDataMessage(ChannelMessage):
+    def __init__(self, number=0x00, data='\x00' * 7):
+        ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_BURST_DATA,
+                                payload=data, number=number)
+
+
+# Channel event messages
+class ChannelEventMessage(ChannelMessage):
+    def __init__(self, number=0x00, message_id=0x00, message_code=0x00):
+        ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_EVENT,
+                                number=number)
+
+    def getMessageID(self):
+        return ord(self.payload[1])
+
+    def setMessageID(self, message_id):
+        if (message_id > 0xFF) or (message_id < 0x00):
+            raise MessageError('Could not set channel number ' \
+                                   '(out of range).')
+
+        self.setPayload(self.getPayload()[0] +
+                        chr(message_id) +
+                        self.getPayload()[2:])
+
+    def getMessageCode(self):
+        return ord(self.payload[2])
+
+    def setMessageCode(self, message_code):
+        if (message_code > 0xFF) or (message_code < 0x00):
+            raise MessageError('Could not set channel number ' \
+                                   '(out of range).')
+
+        self.setPayload(self.getPayload()[0:2] +
+                        chr(message_code))
+
+
+# Requested response messages
+
+

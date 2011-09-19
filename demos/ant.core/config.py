@@ -4,4 +4,6 @@ SERIAL = '/dev/ttyUSB0'
 
 # If set to True, the stick's driver will dump everything it reads/writes
 # from/to the stick.
+# Some demos depend on this setting being True, so unless you know what you
+# are doing, leave it as is.
 DEBUG = True

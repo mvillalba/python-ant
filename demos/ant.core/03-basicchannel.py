@@ -36,7 +36,7 @@ channel.assign(key, CHANNEL_BROADCAST_RECEIVE)
 # Now set the channel id for pairing with an ANT+ HR monitor
 channel.setID(DEVICE_SEARCH, 120, TRANSFER_PAIRING)
 
-# Listen forever and ever
+# Listen forever and ever (not really, but for a long time)
 channel.setSearchTimeout(TIMEOUT_NEVER)
 
 # We want a ~4.06 Hz transmission period

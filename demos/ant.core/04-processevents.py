@@ -41,7 +41,7 @@ channel.open()
 
 # Setup callback
 # Note: We could also register an event listener for non-channel events by
-# calling registerEventListener() on our node.
+# calling registerEventListener() on antnode rather than channel.
 channel.registerEventListener(listener)
 
 # Wait

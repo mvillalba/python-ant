@@ -316,5 +316,114 @@ class ChannelEventMessage(ChannelMessage):
 
 
 # Requested response messages
+class ChannelStatusMessage(ChannelMessage):
+    def __init__(self, number=0x00, status=0x00):
+        ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_STATUS,
+                                payload=chr(status), number=number)
 
+    def getStatus(self):
+        return ord(self.payload[1])
+
+    def setStatus(self, status):
+        if (status > 0xFF) or (status < 0x00):
+            raise MessageError('Could not set channel status ' \
+                                   '(out of range).')
+
+        self.setPayload(self.getPayload()[0] +
+                        chr(status))
+
+#class ChannelIDMessage(ChannelMessage):
+
+class VersionMessage(Message):
+    def __init__(self, version='\x00' * 9):
+        Message.__init__(self, type=MESSAGE_VERSION, payload=version)
+
+    def getVersion(self):
+        return self.getPayload()
+
+    def setVersion(self, version):
+        if (len(version) != 9):
+            raise MessageError('Could not set ANT version ' \
+                               '(expected 9 bytes).')i
+
+        self.setPayload(version)
+
+class CapabilitiesMessage(Message):
+    def __init__(self, max_channels, max_nets, std_opts, adv_opts, adv_opts2):
+        Message.__init__(self, type=MESSAGE_CAPABILITIES)
+        self.setMaxChannels(max_channels)
+        self.setMaxNetworks(max_networks)
+        self.setStdOptions(std_opts)
+        self.setAdvOptions(adv_opts)
+        self.setAdbOptions2(adv_opts2)
+
+    def getMaxChannels(self):
+        return self.getPayload()[0]
+
+    def getMaxNetworks(self):
+        return self.getPayload()[1]
+
+    def getStdOptions(self):
+        return self.getPayload()[2]
+
+    def getAdvOptions(self):
+        return self.getPayload()[3]
+
+    def getAdvOptions2(self):
+        return self.getPayload()[4]
+
+    def setMaxChannels(self, num):
+        if (num > 0xFF) or (num < 0x00):
+            raise MessageError('Could not set max channels ' \
+                                   '(out of range).')
+
+        self.setPayload(self.getPayload()[0] +
+                        chr(num))
+
+    def setMaxNetworks(self, num):
+        if (num > 0xFF) or (num < 0x00):
+            raise MessageError('Could not set max networks ' \
+                                   '(out of range).')
+    
+        self.setPayload(self.getPayload()[1] +
+                        chr(num))
+
+    def setStdOptions(self, num):
+        if (num > 0xFF) or (num < 0x00):
+            raise MessageError('Could not set std options ' \
+                                   '(out of range).')
+    
+        self.setPayload(self.getPayload()[2] +
+                        chr(num))
+
+    def setAdvOptions(self, num):
+        if (num > 0xFF) or (num < 0x00):
+            raise MessageError('Could not set adv options ' \
+                                   '(out of range).')
+    
+        self.setPayload(self.getPayload()[0] +
+                        chr(num))
+
+    def setAdvOptions2(self, num):
+        if (num > 0xFF) or (num < 0x00):
+            raise MessageError('Could not set adv options 2 ' \
+                                   '(out of range).')
+    
+        self.setPayload(self.getPayload()[0] +
+                        chr(num))
+
+class SerialNumberMessage(Message):
+    def __init__(self, serial='\x00' * 4):
+        Message.__init__(self, type=MESSAGE_SERIAL_NUMBER)
+        self.setSerialNumber(serial)
+
+    def getSerialNumber(self):
+        return self.getPayload()
+
+    def setSerialNumber(self, serial):
+        if (len(serial) != 4):
+            raise MessageError('Could not set serial number ' \
+                               '(expected 4 bytes).')
+
+        self.setPayload(serial)
 

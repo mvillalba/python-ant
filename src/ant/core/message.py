@@ -93,7 +93,7 @@ class Message(object):
 
 class ChannelMessage(Message):
     def __init__(self, type, payload='', number=0x00):
-        Message.__init__(type, '\x00' + payload)
+        Message.__init__(self, type, '\x00' + payload)
         self.setChannelNumber(number)
 
     def getChannelNumber(self):
@@ -104,8 +104,9 @@ class ChannelMessage(Message):
             raise MessageError('Could not set channel number ' \
                                    '(out of range).')
 
-        self.payload[0] = chr(number)
+        self.setPayload(chr(number) + self.getPayload()[1:])
 
+# Config messages
 class UnassignChannelMessage(ChannelMessage):
     def __init__(self, number=0x00):
         ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_UNASSIGN,
@@ -206,7 +207,7 @@ def ChannelTXPowerMessage(ChannelMessage):
 def NetworkKeyMessage(Message):
     def __init__(self, number=0x00, key='\x00' * 8):
         payload = chr(number) + key
-        Message__init__(self, type=MESSAGE_NETWORK_KEY, payload=payload)
+        Message.__init__(self, type=MESSAGE_NETWORK_KEY, payload=payload)
 
     def getNumber(self):
         return ord(self.payload[0])
@@ -231,8 +232,35 @@ def TXPowerMessage(Message):
     def setPower(self, power):
         self.payload[1] = chr(power)
 
+
+# Control messages
 class SystemResetMessage(Message):
     def __init__(self):
         Message.__init__(self, type=MESSAGE_SYSTEM_RESET, payload='\x00')
 
+class ChannelOpenMessage(ChannelMessage):
+    def __init__(self, number=0x00):
+        ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_OPEN, number=numer)
 
+class ChannelCloseMessage(ChannelMessage):
+    def __init__(self, number=0x00):
+        ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_CLOSE,
+                                number=number)
+
+class ChannelRequestMessage(ChannelMessage):
+    def __init__(self, number=0x00, message_id=MESSAGE_CHANNEL_STATUS):
+        ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_REQUEST,
+                                number=number)
+        self.setMessageID(message_id)
+
+    def getMessageID(self):
+        return ord(self.payload[1])
+
+    def setMessageID(self, message_id):
+        if (message_id > 0xFF) or (message_id < 0x00):
+            raise MessageError('Could not set channel number ' \
+                                   '(out of range).')
+
+        self.setPayload(self.getPayload()[0] +
+                        chr(message_id) +
+                        self.getPayload()[2:])

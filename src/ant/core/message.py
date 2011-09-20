@@ -92,7 +92,7 @@ class Message(object):
         return self.getSize()
 
     def getHandler(self, raw=None):
-        if raw not None:
+        if not raw:
             self.decode(raw)
 
         msg = None
@@ -228,7 +228,7 @@ class ChanelPeriodMessage(ChannelMessage):
         self.setPayload(self.getPayload()[0] + data[1] + data[2]
                         + self.getPayload()[3:])
 
-def ChannelSearchTimeoutMessage(ChannelMessage):
+class ChannelSearchTimeoutMessage(ChannelMessage):
     def __init__(self, number=0x00, timeout=0xFF):
         ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_SEARCH_TIMEOUT,
                                 payload=chr(timeout), number=number)
@@ -239,7 +239,7 @@ def ChannelSearchTimeoutMessage(ChannelMessage):
     def setTimeout(self, timeout):
         self.setPayload(self.getPayload()[0] + chr(timeout))
 
-def ChannelFrequencyMessage(ChannelMessage):
+class ChannelFrequencyMessage(ChannelMessage):
     def __init__(self, number=0x00, frequency=66):
         ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_FREQUENCY,
                                 payload=chr(frequency), number=number)
@@ -250,7 +250,7 @@ def ChannelFrequencyMessage(ChannelMessage):
     def setFrequency(self, frequency):
         self.setPayload(self.getPayload()[0] + chr(frequency))
 
-def ChannelTXPowerMessage(ChannelMessage):
+class ChannelTXPowerMessage(ChannelMessage):
     def __init__(self, number=0x00, power=0x00):
         ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_TX_POWER,
                                 payload=chr(power), number=number)
@@ -261,7 +261,7 @@ def ChannelTXPowerMessage(ChannelMessage):
     def setPower(self, power):
         self.setPayload(self.getPayload()[0] + chr(power))
 
-def NetworkKeyMessage(Message):
+class NetworkKeyMessage(Message):
     def __init__(self, number=0x00, key='\x00' * 8):
         payload = chr(number) + key
         Message.__init__(self, type=MESSAGE_NETWORK_KEY, payload=payload)
@@ -278,7 +278,7 @@ def NetworkKeyMessage(Message):
     def setKey(self, key):
         self.setPayload(self.getPayload()[0] + key)
 
-def TXPowerMessage(Message):
+class TXPowerMessage(Message):
     def __init__(self, power=0x00):
         payload = struct.pack('BB', 0x00, power)
         Message.__init__(self, type=MESSAGE_TX_POWER, payload=payload)

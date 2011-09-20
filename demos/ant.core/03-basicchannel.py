@@ -16,7 +16,7 @@ from config import *
 NETKEY = '\xB9\xA5\x21\xFB\xBD\x72\xC3\x45'
 
 # Initialize
-stick = driver.USB1Driver(SERIAL, debug=DEBUG)
+stick = driver.USB1Driver(SERIAL, log=LOG, debug=DEBUG)
 antnode = node.Node(stick)
 antnode.start()
 

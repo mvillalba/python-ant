@@ -28,9 +28,10 @@ import serial
 from ant.core.exceptions import DriverError
 
 class Driver(object):
-    def __init__(self, device, debug=False):
+    def __init__(self, device, log=None, debug=False):
         self.device = device
         self.debug = debug
+        self.log = log
         self.is_open = False
 
     def isOpen(self):
@@ -42,6 +43,8 @@ class Driver(object):
 
         self._open()
         self.is_open = True
+        if self.log:
+            self.log.logOpen()
 
     def close(self):
         if not self.isOpen():
@@ -49,6 +52,8 @@ class Driver(object):
 
         self._close()
         self.is_open = False
+        if self.log:
+            self.log.logClose()
 
     def read(self, count):
         if not self.isOpen():
@@ -57,6 +62,8 @@ class Driver(object):
             raise DriverError("Could not read from device (zero request).")
 
         data = self._read(count)
+        if self.log:
+            self.log.logRead(data)
 
         if self.debug:
             self._dump(data, 'READ')
@@ -72,7 +79,10 @@ class Driver(object):
         if self.debug:
             self._dump(data, 'WRITE')
 
-        return self._write(data)
+        ret = self._write(data)
+        if self.log:
+            self.log.logWrite(data[0:ret])
+        return ret
 
     def _dump(self, data, title):
         if len(data) == 0:
@@ -103,8 +113,8 @@ class Driver(object):
         raise DriverError("Not Implemented")
 
 class USB1Driver(Driver):
-    def __init__(self, device, baud_rate=115200, debug=False):
-        Driver.__init__(self, device, debug)
+    def __init__(self, device, baud_rate=115200, log=None, debug=False):
+        Driver.__init__(self, device, log, debug)
         self.baud = baud_rate
 
     def _open(self):

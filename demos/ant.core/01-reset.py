@@ -11,7 +11,7 @@ from ant.core import node
 from config import *
 
 # Initialize and configure our ANT stick's driver
-stick = driver.USB1Driver(SERIAL, debug=DEBUG)
+stick = driver.USB1Driver(SERIAL, log=LOG, debug=DEBUG)
 
 # Now create an ANT node, and pass it our driver so it can talk to the stick
 try:

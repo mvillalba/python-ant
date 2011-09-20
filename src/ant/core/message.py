@@ -214,7 +214,7 @@ class ChannelIDMessage(ChannelMessage):
         self.setPayload(self.getPayload()[0:4] + chr(trans_type)
                         + self.getPayload()[5:])
 
-class ChanelPeriodMessage(ChannelMessage):
+class ChannelPeriodMessage(ChannelMessage):
     def __init__(self, number=0x00, period=8192):
         payload = struct.pack('<H', period)
         ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_PERIOD,
@@ -296,7 +296,7 @@ class SystemResetMessage(Message):
 
 class ChannelOpenMessage(ChannelMessage):
     def __init__(self, number=0x00):
-        ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_OPEN, number=numer)
+        ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_OPEN, number=number)
 
 class ChannelCloseMessage(ChannelMessage):
     def __init__(self, number=0x00):

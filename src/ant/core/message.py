@@ -91,6 +91,60 @@ class Message(object):
 
         return self.getSize()
 
+    def getHandler(self, raw=None):
+        if raw not None:
+            self.decode(raw)
+
+        msg = None
+        if self.type == MESSAGE_CHANNEL_UNASSIGN:
+            msg = ChannelAssignMessage()
+        elif self.type == MESSAGE_CHANNEL_ASSIGN:
+            msg = ChannelAssignMessage()
+        elif self.type == MESSAGE_CHANNEL_ID:
+            msg = ChannelIDMessage()
+        elif self.type == MESSAGE_CHANNEL_PERIOD:
+            msg = ChannelPeriodMessage()
+        elif self.type == MESSAGE_CHANNEL_SEARCH_TIMEOUT:
+            msg = ChannelSearchTimeoutMessage()
+        elif self.type == MESSAGE_CHANNEL_FREQUENCY:
+            msg = ChannelFrequencyMessage()
+        elif self.type == MESSAGE_CHANNEL_TX_POWER:
+            msg = ChannelTXPowerMessage()
+        elif self.type == MESSAGE_NETWORK_KEY:
+            msg = NetworkKeyMessage()
+        elif self.type == MESSAGE_TX_POWER:
+            msg = TXPowerMessage()
+        elif self.type == MESSAGE_SYSTEM_RESET:
+            msg = SystemResetMessage()
+        elif self.type == MESSAGE_CHANNEL_OPEN:
+            msg = ChannelOpenMessage()
+        elif self.type == MESSAGE_CHANNEL_CLOSE:
+            msg = ChannelCloseMessage()
+        elif self.type == MESSAGE_CHANNEL_REQUEST:
+            msg = ChannelRequestMessage()
+        elif self.type == MESSAGE_CHANNEL_BROADCAST_DATA:
+            msg = ChannelBroadcastDataMessage()
+        elif self.type == MESSAGE_CHANNEL_ACKNOWLEDGED_DATA:
+            msg = ChannelAcknowledgedDataMessage()
+        elif self.type == MESSAGE_CHANNEL_BURST_DATA:
+            msg = ChannelBurstDataMessage()
+        elif self.type == MESSAGE_CHANNEL_EVENT:
+            msg = ChannelEventMessage()
+        elif self.type == MESSAGE_CHANNEL_STATUS:
+            msg = ChannelStatusMessage()
+        elif self.type == MESSAGE_VERSION:
+            msg = VersionMessage()
+        elif self.type == MESSAGE_CAPABILITIES:
+            msg = CapabilitiesMessage()
+        elif self.type == MESSAGE_SERIAL_NUMBER:
+            msg = SerialNumberMessage()
+        else:
+            raise MessageError('Could not find message handler ' \
+                               '(unknown message type).')
+
+        msg.setPayload(self.getPayload())
+        return msg
+
 class ChannelMessage(Message):
     def __init__(self, type, payload='', number=0x00):
         Message.__init__(self, type, '\x00' + payload)
@@ -107,12 +161,12 @@ class ChannelMessage(Message):
         self.setPayload(chr(number) + self.getPayload()[1:])
 
 # Config messages
-class UnassignChannelMessage(ChannelMessage):
+class ChannelUnassignMessage(ChannelMessage):
     def __init__(self, number=0x00):
         ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_UNASSIGN,
                          number=number)
 
-class AssignChannelMessage(ChannelMessage):
+class ChannelAssignMessage(ChannelMessage):
     def __init__(self, number=0x00, type=0x00, network=0x00):
         payload = struct.pack('BB', type, network)
         ChannelMessage.__init__(self, type=MESSAGE_CHANNEL_ASSIGN,

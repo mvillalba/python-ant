@@ -97,7 +97,7 @@ class Message(object):
 
         msg = None
         if self.type == MESSAGE_CHANNEL_UNASSIGN:
-            msg = ChannelAssignMessage()
+            msg = ChannelUnassignMessage()
         elif self.type == MESSAGE_CHANNEL_ASSIGN:
             msg = ChannelAssignMessage()
         elif self.type == MESSAGE_CHANNEL_ID:

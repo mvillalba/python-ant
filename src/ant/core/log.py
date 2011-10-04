@@ -98,25 +98,25 @@ class LogWriter(object):
             self.fd.close()
             self.is_open = False
 
+    def _logEvent(self, event, data=None):
+        ev = [event, int(time.time()), data]
+
+        if data is None:
+            ev = ev[0:-1]
+        elif len(data) == 0:
+            return
+
+        self.fd.write(self.packer.pack(ev))
+
     def logOpen(self):
-        ev_open = [EVENT_OPEN, int(time.time())]
-        self.fd.write(self.packer.pack(ev_open))
+        self._logEvent(EVENT_OPEN)
 
     def logClose(self):
-        ev_close = [EVENT_CLOSE, int(time.time())]
-        self.fd.write(self.packer.pack(ev_close))
+        self._logEvent(EVENT_CLOSE)
 
     def logRead(self, data):
-        if len(data) == 0:
-            return
-
-        ev_read = [EVENT_READ, int(time.time()), data]
-        self.fd.write(self.packer.pack(ev_read))
+        self._logEvent(EVENT_READ, data)
 
     def logWrite(self, data):
-        if len(data) == 0:
-            return
-
-        ev_write = [EVENT_WRITE, int(time.time()), data]
-        self.fd.write(self.packer.pack(ev_write))
+        self._logEvent(EVENT_WRITE, data)
 

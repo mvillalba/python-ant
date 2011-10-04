@@ -79,9 +79,56 @@ class MessageTest(unittest.TestCase):
         self.assertRaises(MessageError, self.message.getHandler,
                           '\xA4\x03\xFF\x00\x00\x00\xE5')
 
-class SystemResetMessageTest(unittest.TestCase):
+class ChannelMessageTest(unittest.TestCase):
     def setUp(self):
-        self.message = SystemResetMessage()
+        self.message = ChannelMessage(type_=MESSAGE_SYSTEM_RESET)
 
-    def test_encode(self):
-        self.assertEqual(self.message.encode(), '\xA4\x01\x4A\x00\xEF')
+    def test_get_setChannelNumber(self):
+        self.assertEquals(self.message.getChannelNumber(), 0)
+        self.message.setChannelNumber(3)
+        self.assertEquals(self.message.getChannelNumber(), 3)
+
+class ChannelUnassignMessageTest(unittest.TestCase):
+    # No currently defined methods need testing
+    pass
+
+class ChannelAssignMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = ChannelAssignMessage()
+
+    def test_get_setChannelType(self):
+        self.message.setChannelType(0x10)
+        self.assertEquals(self.message.getChannelType(), 0x10)
+
+    def test_get_setNetworkNumber(self):
+        self.message.setNetworkNumber(0x10)
+        self.assertEquals(self.message.getNetworkNumber(), 0x10)
+
+class SystemResetMessageTest(unittest.TestCase):
+    # No currently defined methods need testing
+    pass
+
+class ChannelOpenMessageTest(unittest.TestCase):
+    # No currently defined methods need testing
+    pass
+
+class ChannelCloseMessageTest(unittest.TestCase):
+    # No currently defined methods need testing
+    pass
+
+class RequestMessageTest(unittest.TestCase):
+    # No currently defined methods need testing
+    pass
+
+class ChannelBroadcastDataMessageTest(unittest.TestCase):
+    # No currently defined methods need testing
+    pass
+
+class ChannelAcknowledgedDataMessageTest(unittest.TestCase):
+    # No currently defined methods need testing
+    pass
+
+class ChannelBurstDataMessageTest(unittest.TestCase):
+    # No currently defined methods need testing
+    pass
+

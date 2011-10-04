@@ -31,25 +31,31 @@ class MessageTest(unittest.TestCase):
     def setUp(self):
         self.message = Message()
 
-    def test_setPayload(self):
+    def test_get_setPayload(self):
         self.assertRaises(MessageError, self.message.setPayload,
                           '\xFF' * 15)
-        self.assertTrue(self.message.setPayload('\x11') is None)
+        self.message.setPayload('\x11' * 5)
+        self.assertEquals(self.message.getPayload(), '\x11' * 5)
 
-    def test_setType(self):
+    def test_get_setType(self):
         self.assertRaises(MessageError, self.message.setType, -1)
         self.assertRaises(MessageError, self.message.setType, 300)
-        self.assertTrue(self.message.setType(0x23) is None)
+        self.message.setType(0x23)
+        self.assertEquals(self.message.getType(), 0x23)
 
     def test_getChecksum(self):
-        self.message = Message(type=MESSAGE_SYSTEM_RESET, payload='\x00')
+        self.message = Message(type_=MESSAGE_SYSTEM_RESET, payload='\x00')
         self.assertEquals(self.message.getChecksum(), 0xEF)
-        self.message = Message(type=MESSAGE_ASSIGN_CHANNEL,
+        self.message = Message(type_=MESSAGE_CHANNEL_ASSIGN,
                                payload='\x00' * 3)
         self.assertEquals(self.message.getChecksum(), 0xE5)
 
+    def test_getSize(self):
+        self.message.setPayload('\x11'*7)
+        self.assertEquals(self.message.getSize(), 11)
+
     def test_encode(self):
-        self.message = Message(type=MESSAGE_ASSIGN_CHANNEL,
+        self.message = Message(type_=MESSAGE_CHANNEL_ASSIGN,
                                payload='\x00' * 3)
         self.assertEqual(self.message.encode(),
                          '\xA4\x03\x42\x00\x00\x00\xE5')
@@ -57,11 +63,21 @@ class MessageTest(unittest.TestCase):
     def test_decode(self):
         self.assertRaises(MessageError, self.message.decode,
                           '\xA5\x03\x42\x00\x00\x00\xE5')
+        self.assertRaises(MessageError, self.message.decode,
+                          '\xA4\x14\x42' + ('\x00' * 20) + '\xE5')
+        self.assertRaises(MessageError, self.message.decode,
+                          '\xA4\x03\x42\x01\x02\xF3\xE5')
         self.assertEqual(self.message.decode('\xA4\x03\x42\x00\x00\x00\xE5'),
                          7)
-        self.assertEqual(self.message.getType(), MESSAGE_ASSIGN_CHANNEL)
+        self.assertEqual(self.message.getType(), MESSAGE_CHANNEL_ASSIGN)
         self.assertEqual(self.message.getPayload(), '\x00' * 3)
         self.assertEqual(self.message.getChecksum(), 0xE5)
+
+    def test_getHandler(self):
+        handler = self.message.getHandler('\xA4\x03\x42\x00\x00\x00\xE5')
+        self.assertTrue(isinstance(handler, ChannelAssignMessage))
+        self.assertRaises(MessageError, self.message.getHandler,
+                          '\xA4\x03\xFF\x00\x00\x00\xE5')
 
 class SystemResetMessageTest(unittest.TestCase):
     def setUp(self):

@@ -29,28 +29,30 @@ from ant.core.exceptions import MessageError
 from ant.core.constants import *
 
 class Message(object):
-    def __init__(self, type=0x00, payload=''):
-        self.setType(type)
+    def __init__(self, type_=0x00, payload=''):
+        self.setType(type_)
         self.setPayload(payload)
 
     def getPayload(self):
-        return self.payload
+        return ''.join(self.payload)
 
     def setPayload(self, payload):
         if len(payload) > 9:
             raise MessageError(
                   'Could not set payload (payload too long).')
 
-        self.payload = payload
+        self.payload = []
+        for byte in payload:
+            self.payload += byte
 
     def getType(self):
-        return self.type
+        return self.type_
 
-    def setType(self, type):
-        if (type > 0xFF) or (type < 0x00):
+    def setType(self, type_):
+        if (type_ > 0xFF) or (type_ < 0x00):
             raise MessageError('Could not set type (type out of range).')
 
-        self.type = type
+        self.type_ = type_
 
     def getChecksum(self):
         data = chr(len(self.getPayload()))
@@ -77,66 +79,66 @@ class Message(object):
         return raw
 
     def decode(self, raw):
-        sync, length, type = struct.unpack('BBB', raw[:3])
+        sync, length, type_ = struct.unpack('BBB', raw[:3])
         if sync != MESSAGE_TX_SYNC:
             raise MessageError('Could not decode (expected TX sync).')
         if length > 9:
             raise MessageError('Could not decode (payload too long).')
 
-        self.setType(type)
+        self.setType(type_)
         self.setPayload(raw[3:length + 3])
 
-        if self.getChecksum() != ord(raw[length + 3]):
+        if self.getChecksum() != ord(raw[-1]):
             raise MessageError('Could not decode (bad checksum).')
 
         return self.getSize()
 
     def getHandler(self, raw=None):
-        if not raw:
+        if raw:
             self.decode(raw)
 
         msg = None
-        if self.type == MESSAGE_CHANNEL_UNASSIGN:
+        if self.type_ == MESSAGE_CHANNEL_UNASSIGN:
             msg = ChannelUnassignMessage()
-        elif self.type == MESSAGE_CHANNEL_ASSIGN:
+        elif self.type_ == MESSAGE_CHANNEL_ASSIGN:
             msg = ChannelAssignMessage()
-        elif self.type == MESSAGE_CHANNEL_ID:
+        elif self.type_ == MESSAGE_CHANNEL_ID:
             msg = ChannelIDMessage()
-        elif self.type == MESSAGE_CHANNEL_PERIOD:
+        elif self.type_ == MESSAGE_CHANNEL_PERIOD:
             msg = ChannelPeriodMessage()
-        elif self.type == MESSAGE_CHANNEL_SEARCH_TIMEOUT:
+        elif self.type_ == MESSAGE_CHANNEL_SEARCH_TIMEOUT:
             msg = ChannelSearchTimeoutMessage()
-        elif self.type == MESSAGE_CHANNEL_FREQUENCY:
+        elif self.type_ == MESSAGE_CHANNEL_FREQUENCY:
             msg = ChannelFrequencyMessage()
-        elif self.type == MESSAGE_CHANNEL_TX_POWER:
+        elif self.type_ == MESSAGE_CHANNEL_TX_POWER:
             msg = ChannelTXPowerMessage()
-        elif self.type == MESSAGE_NETWORK_KEY:
+        elif self.type_ == MESSAGE_NETWORK_KEY:
             msg = NetworkKeyMessage()
-        elif self.type == MESSAGE_TX_POWER:
+        elif self.type_ == MESSAGE_TX_POWER:
             msg = TXPowerMessage()
-        elif self.type == MESSAGE_SYSTEM_RESET:
+        elif self.type_ == MESSAGE_SYSTEM_RESET:
             msg = SystemResetMessage()
-        elif self.type == MESSAGE_CHANNEL_OPEN:
+        elif self.type_ == MESSAGE_CHANNEL_OPEN:
             msg = ChannelOpenMessage()
-        elif self.type == MESSAGE_CHANNEL_CLOSE:
+        elif self.type_ == MESSAGE_CHANNEL_CLOSE:
             msg = ChannelCloseMessage()
-        elif self.type == MESSAGE_CHANNEL_REQUEST:
+        elif self.type_ == MESSAGE_CHANNEL_REQUEST:
             msg = ChannelRequestMessage()
-        elif self.type == MESSAGE_CHANNEL_BROADCAST_DATA:
+        elif self.type_ == MESSAGE_CHANNEL_BROADCAST_DATA:
             msg = ChannelBroadcastDataMessage()
-        elif self.type == MESSAGE_CHANNEL_ACKNOWLEDGED_DATA:
+        elif self.type_ == MESSAGE_CHANNEL_ACKNOWLEDGED_DATA:
             msg = ChannelAcknowledgedDataMessage()
-        elif self.type == MESSAGE_CHANNEL_BURST_DATA:
+        elif self.type_ == MESSAGE_CHANNEL_BURST_DATA:
             msg = ChannelBurstDataMessage()
-        elif self.type == MESSAGE_CHANNEL_EVENT:
+        elif self.type_ == MESSAGE_CHANNEL_EVENT:
             msg = ChannelEventMessage()
-        elif self.type == MESSAGE_CHANNEL_STATUS:
+        elif self.type_ == MESSAGE_CHANNEL_STATUS:
             msg = ChannelStatusMessage()
-        elif self.type == MESSAGE_VERSION:
+        elif self.type_ == MESSAGE_VERSION:
             msg = VersionMessage()
-        elif self.type == MESSAGE_CAPABILITIES:
+        elif self.type_ == MESSAGE_CAPABILITIES:
             msg = CapabilitiesMessage()
-        elif self.type == MESSAGE_SERIAL_NUMBER:
+        elif self.type_ == MESSAGE_SERIAL_NUMBER:
             msg = SerialNumberMessage()
         else:
             raise MessageError('Could not find message handler ' \

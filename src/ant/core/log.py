@@ -34,8 +34,7 @@ EVENT_READ=0x03
 EVENT_WRITE=0x04
 
 class LogReader(object):
-    def __init__(self, filename=''):
-        self.unpacker = msgpack.Unpacker()
+    def __init__(self, filename):
         self.is_open = False
         self.open(filename)
 
@@ -43,12 +42,13 @@ class LogReader(object):
         if self.is_open:
             self.fd.close()
 
-    def open(self, filename=''):
+    def open(self, filename):
         if self.is_open == True:
             self.close()
 
         self.fd = open(filename, 'r')
         self.is_open = True
+        self.unpacker = msgpack.Unpacker()
 
         # Here be dragons
         self.unpacker.feed(self.fd.read())
@@ -88,6 +88,7 @@ class LogWriter(object):
 
         self.fd = open(filename, 'w')
         self.is_open = True
+        self.packer = msgpack.Packer()
 
         header = ['ANT-LOG', 0x01] # [MAGIC, VERSION]
         self.fd.write(self.packer.pack(header))

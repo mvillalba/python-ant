@@ -55,6 +55,8 @@ class LogReaderTest(unittest.TestCase):
         t4 = self.log.read()
         t5 = self.log.read()
 
+        self.assertEquals(self.log.read(), None)
+
         self.assertEquals(t1[0], EVENT_OPEN)
         self.assertTrue(isinstance(t1[1], int))
         self.assertEquals(len(t1), 2)

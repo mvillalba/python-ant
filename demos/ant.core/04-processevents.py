@@ -23,7 +23,7 @@ class HRMListener(event.ChannelEventListener):
         print 'Heart Rate:', ord(event.payload[-1])
 
 # Initialize
-stick = driver.USB1Driver(SERIAL, debug=DEBUG)
+stick = driver.USB1Driver(SERIAL, log=LOG, debug=DEBUG)
 antnode = node.Node(stick)
 antnode.start()
 

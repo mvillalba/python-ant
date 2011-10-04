@@ -55,5 +55,5 @@ setup(
         ],
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    install_requires=['distribute', 'pyserial'],
+    install_requires=['distribute', 'pyserial', 'msgpack-python'],
 )

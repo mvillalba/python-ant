@@ -184,9 +184,14 @@ class ChannelCloseMessageTest(unittest.TestCase):
     # No currently defined methods need testing
     pass
 
-class RequestMessageTest(unittest.TestCase):
-    # No currently defined methods need testing
-    pass
+class ChannelRequestMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = ChannelRequestMessage()
+
+    def test_get_setMessageID(self):
+        self.message.setMessageID(0xFA)
+        self.assertEquals(self.message.getMessageID(), 0xFA)
+        self.assertRaises(MessageError, self.message.setMessageID, 0xFFFF)
 
 class ChannelBroadcastDataMessageTest(unittest.TestCase):
     # No currently defined methods need testing
@@ -200,3 +205,73 @@ class ChannelBurstDataMessageTest(unittest.TestCase):
     # No currently defined methods need testing
     pass
 
+class ChannelEventMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = ChannelEventMessage()
+
+    def test_get_setMessageID(self):
+        self.message.setMessageID(0xFA)
+        self.assertEquals(self.message.getMessageID(), 0xFA)
+        self.assertRaises(MessageError, self.message.setMessageID, 0xFFFF)
+
+    def test_get_setMessageCode(self):
+        self.message.setMessageCode(0xFA)
+        self.assertEquals(self.message.getMessageCode(), 0xFA)
+        self.assertRaises(MessageError, self.message.setMessageCode, 0xFFFF)
+
+class ChannelStatusMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = ChannelStatusMessage()
+
+    def test_get_setStatus(self):
+        self.message.setStatus(0xFA)
+        self.assertEquals(self.message.getStatus(), 0xFA)
+        self.assertRaises(MessageError, self.message.setStatus, 0xFFFF)
+
+class VersionMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = VersionMessage()
+
+    def test_get_setVersion(self):
+        self.message.setVersion('\xAB' * 9)
+        self.assertEquals(self.message.getVersion(), '\xAB' * 9)
+        self.assertRaises(MessageError, self.message.setVersion, '1234')
+
+class CapabilitiesMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = CapabilitiesMessage()
+
+    def test_get_setMaxChannels(self):
+        self.message.setMaxChannels(0xFA)
+        self.assertEquals(self.message.getMaxChannels(), 0xFA)
+        self.assertRaises(MessageError, self.message.setMaxChannels, 0xFFFF)
+
+    def test_get_setMaxNetworks(self):
+        self.message.setMaxNetworks(0xFA)
+        self.assertEquals(self.message.getMaxNetworks(), 0xFA)
+        self.assertRaises(MessageError, self.message.setMaxNetworks, 0xFFFF)
+
+    def test_get_setStdOptions(self):
+        self.message.setStdOptions(0xFA)
+        self.assertEquals(self.message.getStdOptions(), 0xFA)
+        self.assertRaises(MessageError, self.message.setStdOptions, 0xFFFF)
+
+    def test_get_setAdvOptions(self):
+        self.message.setAdvOptions(0xFA)
+        self.assertEquals(self.message.getAdvOptions(), 0xFA)
+        self.assertRaises(MessageError, self.message.setAdvOptions, 0xFFFF)
+
+    def test_get_setAdvOptions2(self):
+        self.message.setAdvOptions2(0xFA)
+        self.assertEquals(self.message.getAdvOptions2(), 0xFA)
+        self.assertRaises(MessageError, self.message.setAdvOptions2, 0xFFFF)
+
+class SerialNumberMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = SerialNumberMessage()
+
+    def test_get_setSerialNumber(self):
+        self.message.setSerialNumber('\xFA\xFB\xFC\xFD')
+        self.assertEquals(self.message.getSerialNumber(), '\xFA\xFB\xFC\xFD')
+        self.assertRaises(MessageError, self.message.setSerialNumber,
+                          '\xFF' * 8)

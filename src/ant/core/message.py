@@ -413,12 +413,13 @@ class VersionMessage(Message):
 class CapabilitiesMessage(Message):
     def __init__(self, max_channels=0x00, max_nets=0x00, std_opts=0x00,
                  adv_opts=0x00, adv_opts2=0x00):
-        Message.__init__(self, type_=MESSAGE_CAPABILITIES, payload='\x00' * 5)
+        Message.__init__(self, type_=MESSAGE_CAPABILITIES, payload='\x00' * 4)
         self.setMaxChannels(max_channels)
         self.setMaxNetworks(max_nets)
         self.setStdOptions(std_opts)
         self.setAdvOptions(adv_opts)
-        self.setAdvOptions2(adv_opts2)
+        if adv_opts2 is not None:
+            self.setAdvOptions2(adv_opts2)
 
     def getMaxChannels(self):
         return ord(self.payload[0])
@@ -433,7 +434,7 @@ class CapabilitiesMessage(Message):
         return ord(self.payload[3])
 
     def getAdvOptions2(self):
-        return ord(self.payload[4])
+        return ord(self.payload[4]) if len(self.payload) == 5 else 0x00
 
     def setMaxChannels(self, num):
         if (num > 0xFF) or (num < 0x00):
@@ -468,6 +469,8 @@ class CapabilitiesMessage(Message):
             raise MessageError('Could not set adv options 2 ' \
                                    '(out of range).')
 
+        if len(self.payload) == 4:
+            self.payload.append('\x00')
         self.payload[4] = chr(num)
 
 class SerialNumberMessage(Message):

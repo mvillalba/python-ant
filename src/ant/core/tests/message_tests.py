@@ -269,6 +269,8 @@ class CapabilitiesMessageTest(unittest.TestCase):
         self.message.setAdvOptions2(0xFA)
         self.assertEquals(self.message.getAdvOptions2(), 0xFA)
         self.assertRaises(MessageError, self.message.setAdvOptions2, 0xFFFF)
+        self.message = CapabilitiesMessage(adv_opts2=None)
+        self.assertEquals(len(self.message.payload), 4)
 
 class SerialNumberMessageTest(unittest.TestCase):
     def setUp(self):

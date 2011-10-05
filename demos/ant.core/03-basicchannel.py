@@ -25,7 +25,7 @@ key = node.NetworkKey('ANT+', NETKEY)
 antnode.setNetworkKey(key)
 
 # Get the first unused channel. Returns an instance of the node.Channel class.
-channel = antnode.getChannel()
+channel = antnode.getFreeChannel()
 
 # Let's give our channel a nickname
 channel.setName('HRM')

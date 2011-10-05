@@ -30,4 +30,6 @@ class DriverError(ANTException):
     pass
 
 class MessageError(ANTException):
-    pass
+    def __init__(self, msg, internal=''):
+        Exception.__init__(self, msg)
+        self.internal = internal

@@ -28,9 +28,12 @@
 # don't-fix-it-if-it-ain't-broken kind of threaded code ahead.
 #
 
+MAX_ACK_QUEUE = 25
+
 import thread
 import time
 
+from ant.core.constants import *
 from ant.core.message import Message, ChannelEventMessage
 from ant.core.exceptions import MessageError
 
@@ -44,7 +47,10 @@ def ProcessBuffer(buffer_):
             buffer_ = buffer_[len(msg.getPayload()) + 4:]
             messages.append(msg)
         except MessageError, e:
-            break
+            if e.internal == "CHECKSUM":
+                buffer_ = buffer_[ord(buffer_[1]) + 4:] 
+            else:
+                break
 
     return (buffer_, messages,)
 
@@ -71,7 +77,7 @@ def EventPump(evm):
             for callback in evm.callbacks:
                 try:
                     callback.process(message)
-                except:
+                except Exception, e:
                     pass
             
         evm.callbacks_lock.release()
@@ -98,18 +104,24 @@ class AckCallback(EventCallback):
 
     def process(self, msg):
         if isinstance(msg, ChannelEventMessage):
-            pass
+            self.evm.ack_lock.acquire()
+            self.evm.ack.append(msg)
+            if len(self.evm.ack) > MAX_ACK_QUEUE:
+                self.evm.ack = self.evm.ack[-MAX_ACK_QUEUE:]
+            self.evm.ack_lock.release()
 
 class EventMachine(object):
     callbacks_lock = thread.allocate_lock()
     running_lock = thread.allocate_lock()
     pump_lock = thread.allocate_lock()
+    ack_lock = thread.allocate_lock()
 
     def __init__(self, driver):
         self.driver = driver
         self.callbacks = []
         self.running = False
         self.pump = False
+        self.ack = []
         self.registerCallback(AckCallback(self))
 
     def registerCallback(self, callback):
@@ -124,7 +136,16 @@ class EventMachine(object):
         self.callbacks_lock.release()
 
     def waitForAck(self, msg):
-        pass
+        while True:
+            self.ack_lock.acquire()
+            for emsg in self.ack:
+                if msg.getType() != emsg.getMessageID():
+                    continue
+                self.ack.remove(emsg)
+                self.ack_lock.release()
+                return emsg.getMessageCode()
+            self.ack_lock.release()
+            time.sleep(0.002)
 
     def start(self, driver=None):
         self.running_lock.acquire()

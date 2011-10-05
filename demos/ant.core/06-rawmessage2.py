@@ -13,7 +13,7 @@ from ant.core.constants import *
 from config import *
 
 # Initialize
-stick = driver.USB1Driver(SERIAL, debug=DEBUG)
+stick = driver.USB1Driver(SERIAL, log=LOG, debug=DEBUG)
 stick.open()
 
 # Reset stick

@@ -82,6 +82,7 @@ class LogWriter(object):
     def open(self, filename=''):
         if filename == '':
             filename = datetime.datetime.now().isoformat() + '.ant'
+        self.filename = filename
 
         if self.is_open == True:
             self.close()

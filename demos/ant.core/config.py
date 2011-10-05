@@ -13,3 +13,7 @@ DEBUG = True
 # Set to None to disable logging
 #LOG = None
 LOG = log.LogWriter()
+
+# ========== DO NOT CHANGE ANYTHING BELOW THIS LINE ==========
+print "Using log file:", LOG.filename
+print ""

@@ -23,13 +23,8 @@
 #
 ##############################################################################
 
-class ANTException(Exception):
-    pass
+import unittest
 
-class DriverError(ANTException):
-    pass
+from ant.core.event import *
 
-class MessageError(ANTException):
-    def __init__(self, msg, internal=''):
-        Exception.__init__(self, msg)
-        self.internal = internal
+#TODO: How exactly do you properly test threaded code?

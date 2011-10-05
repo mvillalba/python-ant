@@ -78,6 +78,10 @@ class MessageTest(unittest.TestCase):
         self.assertTrue(isinstance(handler, ChannelAssignMessage))
         self.assertRaises(MessageError, self.message.getHandler,
                           '\xA4\x03\xFF\x00\x00\x00\xE5')
+        self.assertRaises(MessageError, self.message.getHandler,
+                          '\xA4\x03\x42')
+        self.assertRaises(MessageError, self.message.getHandler,
+                          '\xA4\x05\x42\x00\x00\x00\x00')
 
 class ChannelMessageTest(unittest.TestCase):
     def setUp(self):

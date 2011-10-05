@@ -79,11 +79,18 @@ class Message(object):
         return raw
 
     def decode(self, raw):
+        if len(raw) < 5:
+            raise MessageError('Could not decode (message is incomplete).')
+
         sync, length, type_ = struct.unpack('BBB', raw[:3])
+
         if sync != MESSAGE_TX_SYNC:
             raise MessageError('Could not decode (expected TX sync).')
         if length > 9:
             raise MessageError('Could not decode (payload too long).')
+        if len(raw) < (length + 4):
+            raise MessageError('Could not decode (message is incomplete).')
+
 
         self.setType(type_)
         self.setPayload(raw[3:length + 3])

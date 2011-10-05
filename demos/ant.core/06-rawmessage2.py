@@ -27,7 +27,11 @@ msg.setMessageID(MESSAGE_CAPABILITIES)
 stick.write(msg.encode())
 
 # Read response
-stick.read(10)
+hdlfinder = message.Message()
+capmsg = hdlfinder.getHandler(stick.read(8))
+
+print 'Max Channels:', capmsg.getMaxChannels()
+print 'Max Networks:', capmsg.getMaxNetworks()
 
 # Shutdown
 stick.close()

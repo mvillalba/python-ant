@@ -101,8 +101,76 @@ class ChannelAssignMessageTest(unittest.TestCase):
         self.assertEquals(self.message.getChannelType(), 0x10)
 
     def test_get_setNetworkNumber(self):
-        self.message.setNetworkNumber(0x10)
-        self.assertEquals(self.message.getNetworkNumber(), 0x10)
+        self.message.setNetworkNumber(0x11)
+        self.assertEquals(self.message.getNetworkNumber(), 0x11)
+
+class ChannelIDMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = ChannelIDMessage()
+
+    def test_get_setDeviceNumber(self):
+        self.message.setDeviceNumber(0x10FA)
+        self.assertEquals(self.message.getDeviceNumber(), 0x10FA)
+
+    def test_get_setDeviceType(self):
+        self.message.setDeviceType(0x10)
+        self.assertEquals(self.message.getDeviceType(), 0x10)
+
+    def test_get_setTransmissionType(self):
+        self.message.setTransmissionType(0x11)
+        self.assertEquals(self.message.getTransmissionType(), 0x11)
+
+class ChannelPeriodMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = ChannelPeriodMessage()
+
+    def test_get_setChannelPeriod(self):
+        self.message.setChannelPeriod(0x10FA)
+        self.assertEquals(self.message.getChannelPeriod(), 0x10FA)
+
+class ChannelSearchTimeoutMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = ChannelSearchTimeoutMessage()
+
+    def test_get_setTimeout(self):
+        self.message.setTimeout(0x10)
+        self.assertEquals(self.message.getTimeout(), 0x10)
+
+class ChannelFrequencyMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = ChannelFrequencyMessage()
+
+    def test_get_setFrequency(self):
+        self.message.setFrequency(22)
+        self.assertEquals(self.message.getFrequency(), 22)
+
+class ChannelTXPowerMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = ChannelTXPowerMessage()
+
+    def test_get_setPower(self):
+        self.message.setPower(0xFA)
+        self.assertEquals(self.message.getPower(), 0xFA)
+
+class NetworkKeyMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = NetworkKeyMessage()
+
+    def test_get_setNumber(self):
+        self.message.setNumber(0xFA)
+        self.assertEquals(self.message.getNumber(), 0xFA)
+
+    def test_get_setKey(self):
+        self.message.setKey('\xFD' * 8)
+        self.assertEquals(self.message.getKey(), '\xFD' * 8)
+
+class TXPowerMessageTest(unittest.TestCase):
+    def setUp(self):
+        self.message = TXPowerMessage()
+
+    def test_get_setPower(self):
+        self.message.setPower(0xFA)
+        self.assertEquals(self.message.getPower(), 0xFA)
 
 class SystemResetMessageTest(unittest.TestCase):
     # No currently defined methods need testing

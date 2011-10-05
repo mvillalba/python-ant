@@ -187,108 +187,107 @@ class ChannelAssignMessage(ChannelMessage):
         self.payload[2] = chr(number)
 
 class ChannelIDMessage(ChannelMessage):
-    def __init__(self, number=0x00, device_number=0x00, device_type=0x00,
+    def __init__(self, number=0x00, device_number=0x0000, device_type=0x00,
                  trans_type=0x00):
-        payload = struct.pack('<HBB', device_number, device_type, trans_type)
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_ID,
-                                payload=payload, number=number)
+                                payload='\x00' * 4, number=number)
+        self.setDeviceNumber(device_number)
+        self.setDeviceType(device_type)
+        self.setTransmissionType(trans_type)
 
     def getDeviceNumber(self):
-        return struct.unpack('<H', self.getPayload()[1:3])
+        return struct.unpack('<H', self.getPayload()[1:3])[0]
 
     def setDeviceNumber(self, device_number):
-        data = struct.pack('<H', device_number)
-        self.setPayload(self.getPayload()[0] + data[1] + data[2]
-                        + self.getPayload()[3:])
+        self.payload[1:3] = struct.pack('<H', device_number)
 
     def getDeviceType(self):
-        return ord(self.getPayload()[3])
+        return ord(self.payload[3])
 
     def setDeviceType(self, device_type):
-        self.setPayload(self.getPayload()[0:3] + chr(device_type)
-                        + self.getPayload()[4:])
+        self.payload[3] = chr(device_type)
 
     def getTransmissionType(self):
-        return ord(self.getPayload()[4])
+        return ord(self.payload[4])
 
     def setTransmissionType(self, trans_type):
-        self.setPayload(self.getPayload()[0:4] + chr(trans_type)
-                        + self.getPayload()[5:])
+        self.payload[4] = chr(trans_type)
 
 class ChannelPeriodMessage(ChannelMessage):
     def __init__(self, number=0x00, period=8192):
-        payload = struct.pack('<H', period)
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_PERIOD,
-                                payload=payload, number=number)
+                                payload='\x00' * 2, number=number)
+        self.setChannelPeriod(period)
 
     def getChannelPeriod(self):
-        return struct.unpack('<H', self.getPayload()[1:3])
+        return struct.unpack('<H', self.getPayload()[1:3])[0]
 
     def setChannelPeriod(self, period):
-        data = struct.pack('<H', period)
-        self.setPayload(self.getPayload()[0] + data[1] + data[2]
-                        + self.getPayload()[3:])
+        self.payload[1:3] = struct.pack('<H', period)
 
 class ChannelSearchTimeoutMessage(ChannelMessage):
     def __init__(self, number=0x00, timeout=0xFF):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_SEARCH_TIMEOUT,
-                                payload=chr(timeout), number=number)
+                                payload='\x00', number=number)
+        self.setTimeout(timeout)
 
     def getTimeout(self):
-        return ord(self.getPayload()[1])
+        return ord(self.payload[1])
 
     def setTimeout(self, timeout):
-        self.setPayload(self.getPayload()[0] + chr(timeout))
+        self.payload[1] = chr(timeout)
 
 class ChannelFrequencyMessage(ChannelMessage):
     def __init__(self, number=0x00, frequency=66):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_FREQUENCY,
-                                payload=chr(frequency), number=number)
+                                payload='\x00', number=number)
+        self.setFrequency(frequency)
 
     def getFrequency(self):
-        return ord(self.getPayload()[1])
+        return ord(self.payload[1])
 
     def setFrequency(self, frequency):
-        self.setPayload(self.getPayload()[0] + chr(frequency))
+        self.payload[1] = chr(frequency)
 
 class ChannelTXPowerMessage(ChannelMessage):
     def __init__(self, number=0x00, power=0x00):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_TX_POWER,
-                                payload=chr(power), number=number)
+                                payload='\x00', number=number)
 
     def getPower(self):
-        return ord(self.getPayload()[1])
+        return ord(self.payload[1])
 
     def setPower(self, power):
-        self.setPayload(self.getPayload()[0] + chr(power))
+        self.payload[1] = chr(power)
 
 class NetworkKeyMessage(Message):
     def __init__(self, number=0x00, key='\x00' * 8):
-        payload = chr(number) + key
-        Message.__init__(self, type_=MESSAGE_NETWORK_KEY, payload=payload)
+        Message.__init__(self, type_=MESSAGE_NETWORK_KEY, payload='\x00' * 9)
+        self.setNumber(number)
+        self.setKey(key)
 
     def getNumber(self):
-        return ord(self.getPayload()[0])
+        return ord(self.payload[0])
 
     def setNumber(self, number):
-        self.setPayload(chr(number) + self.getPayload()[1:])
+        self.payload[0] = chr(number)
 
     def getKey(self):
         return self.getPayload()[1:]
 
     def setKey(self, key):
-        self.setPayload(self.getPayload()[0] + key)
+        self.payload[1:] = key
 
 class TXPowerMessage(Message):
     def __init__(self, power=0x00):
-        payload = struct.pack('BB', 0x00, power)
-        Message.__init__(self, type_=MESSAGE_TX_POWER, payload=payload)
+        Message.__init__(self, type_=MESSAGE_TX_POWER, payload='\x00\x00')
+        self.setPower(power)
 
     def getPower(self):
-        return ord(self.getPayload()[1])
+        return ord(self.payload[1])
 
     def setPower(self, power):
-        self.setPayload(self.getPayload()[0] + chr(power))
+        self.payload[1] = chr(power)
 
 # Control messages
 class SystemResetMessage(Message):

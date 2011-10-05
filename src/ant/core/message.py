@@ -95,7 +95,7 @@ class Message(object):
         self.setType(type_)
         self.setPayload(raw[3:length + 3])
 
-        if self.getChecksum() != ord(raw[-1]):
+        if self.getChecksum() != ord(raw[length + 3]):
             raise MessageError('Could not decode (bad checksum).')
 
         return self.getSize()

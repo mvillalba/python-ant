@@ -21,10 +21,10 @@ antnode.start()
 # internal Node instance state.
 capabilities = antnode.getCapabilities()
 
-print 'Maximum channels:', capabilities['max_channels']
-print 'Maximum network keys:', capabilities['max_net_keys']
-print 'Standard options: %X' % capabilities['std_options']
-print 'Advanced options: %X' % capabilities['adv_options']
+print 'Maximum channels:', capabilities[0]
+print 'Maximum network keys:', capabilities[1]
+print 'Standard options: %X' % capabilities[2][0]
+print 'Advanced options: %X' % capabilities[2][1]
 
 # Shutdown
 antnode.stop()

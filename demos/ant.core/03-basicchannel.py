@@ -22,7 +22,7 @@ antnode.start()
 
 # Set network key
 key = node.NetworkKey('ANT+', NETKEY)
-antnode.setNetworkKey(key)
+antnode.setNetworkKey(0, key)
 
 # Get the first unused channel. Returns an instance of the node.Channel class.
 channel = antnode.getFreeChannel()

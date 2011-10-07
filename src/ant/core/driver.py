@@ -39,13 +39,16 @@ class Driver(object):
         self.is_open = False
 
     def isOpen(self):
-        return self.is_open
+        self._lock.acquire()
+        io = self.is_open
+        self._lock.release()
+        return io
 
     def open(self):
         self._lock.acquire()
 
         try:
-            if self.isOpen():
+            if self.is_open:
                 raise DriverError("Could not open device (already open).")
 
             self._open()
@@ -59,7 +62,7 @@ class Driver(object):
         self._lock.acquire()
 
         try:
-            if not self.isOpen():
+            if not self.is_open:
                 raise DriverError("Could not close device (not open).")
 
             self._close()
@@ -73,7 +76,7 @@ class Driver(object):
         self._lock.acquire()
 
         try:
-            if not self.isOpen():
+            if not self.is_open:
                 raise DriverError("Could not read from device (not open).")
             if count <= 0:
                 raise DriverError("Could not read from device (zero request).")
@@ -93,7 +96,7 @@ class Driver(object):
         self._lock.acquire()
 
         try:
-            if not self.isOpen():
+            if not self.is_open:
                 raise DriverError("Could not write to device (not open).")
             if len(data) <= 0:
                 raise DriverError("Could not write to device (no data).")

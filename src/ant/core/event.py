@@ -29,6 +29,7 @@
 #
 
 MAX_ACK_QUEUE = 25
+MAX_MSG_QUEUE = 25
 
 import thread
 import time
@@ -89,12 +90,6 @@ def EventPump(evm):
     evm.pump_lock.release()
 
 class EventCallback(object):
-    def start(self, driver):
-        self.driver = driver
-
-    def stop(self):
-        pass
-
     def process(self, msg):
         pass
 
@@ -110,11 +105,23 @@ class AckCallback(EventCallback):
                 self.evm.ack = self.evm.ack[-MAX_ACK_QUEUE:]
             self.evm.ack_lock.release()
 
+class MsgCallback(EventCallback):
+    def __init__(self, evm):
+        self.evm = evm
+
+    def process(self, msg):
+        self.evm.msg_lock.acquire()
+        self.evm.msg.append(msg)
+        if len(self.evm.msg) > MAX_MSG_QUEUE:
+            self.evm.msg = self.evm.msg[-MAX_MSG_QUEUE:]
+        self.evm.msg_lock.release()
+
 class EventMachine(object):
     callbacks_lock = thread.allocate_lock()
     running_lock = thread.allocate_lock()
     pump_lock = thread.allocate_lock()
     ack_lock = thread.allocate_lock()
+    msg_lock = thread.allocate_lock()
 
     def __init__(self, driver):
         self.driver = driver
@@ -122,17 +129,20 @@ class EventMachine(object):
         self.running = False
         self.pump = False
         self.ack = []
+        self.msg = []
         self.registerCallback(AckCallback(self))
+        self.registerCallback(MsgCallback(self))
 
     def registerCallback(self, callback):
         self.callbacks_lock.acquire()
         if callback not in self.callbacks:
             self.callbacks.append(callback)
+        self.callbacks_lock.release()
 
-        self.running_lock.acquire()
-        if self.running:
-            callback.start(self.driver)
-        self.running_lock.release()
+    def removeCallback(self, callback):
+        self.callbacks_lock.acquire()
+        if callback in self.callbacks:
+            self.callbacks.remove(callback)
         self.callbacks_lock.release()
 
     def waitForAck(self, msg):
@@ -147,6 +157,18 @@ class EventMachine(object):
             self.ack_lock.release()
             time.sleep(0.002)
 
+    def waitForMessage(self, class_):
+        while True:
+            self.msg_lock.acquire()
+            for emsg in self.msg:
+                if not isinstance(emsg, class_):
+                    continue
+                self.msg.remove(emsg)
+                self.msg_lock.release()
+                return emsg
+            self.msg_lock.release()
+            time.sleep(0.002)
+
     def start(self, driver=None):
         self.running_lock.acquire()
 
@@ -156,11 +178,6 @@ class EventMachine(object):
         self.running = True
         if driver is not None:
             self.driver = driver
-
-        self.callbacks_lock.acquire()
-        for callback in self.callbacks:
-            callback.start(self.driver)
-        self.callbacks_lock.release()
 
         thread.start_new_thread(EventPump, (self,))
         while True:
@@ -175,11 +192,12 @@ class EventMachine(object):
 
     def stop(self):
         self.running_lock.acquire()
-        
+
         if not self.running:
             self.running_lock.release()
             return
         self.running = False
+        self.running_lock.release()
 
         while True:
             self.pump_lock.acquire()
@@ -188,5 +206,3 @@ class EventMachine(object):
                 break
             self.pump_lock.release()
             time.sleep(0.001)
-
-        self.running_lock.release()

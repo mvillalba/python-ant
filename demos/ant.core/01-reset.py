@@ -14,15 +14,15 @@ from config import *
 stick = driver.USB1Driver(SERIAL, log=LOG, debug=DEBUG)
 
 # Now create an ANT node, and pass it our driver so it can talk to the stick
-try:
-    antnode = node.Node(stick)
-except driver.DriverError, e:
-    print e
-    sys.exit()
+antnode = node.Node(stick)
 
 # Open driver if closed, start event listener, reset internal settings, and
 # send a system reset command to the ANT stick (blocks).
-antnode.start()
+try:
+    antnode.start()
+except driver.DriverError, e:
+    print e
+    sys.exit()
 
 # At any point in our node's life, we could manually call reset() to re-
 # initialize the stick and Node. Like this:

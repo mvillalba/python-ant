@@ -74,6 +74,9 @@ Release Checklist
  * Upload dist files to GitHub and download them to check integrity
  * Unfreeze version numbers from setup.py and buildout.cfg
  * Set version number to "develop" (setup.py, project's __init__.py, docs)
+ * Go back to old development repo and update everything
+   % git checkout develop && git pull origin develop
+   % git checkout master && git pull origin master
  * Upload built documentation
  * Make public announcement, if necessary
 

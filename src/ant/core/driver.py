@@ -29,6 +29,7 @@ import serial
 
 from ant.core.exceptions import DriverError
 
+
 class Driver(object):
     _lock = thread.allocate_lock()
 
@@ -139,6 +140,7 @@ class Driver(object):
 
     def _write(self, data):
         raise DriverError("Not Implemented")
+
 
 class USB1Driver(Driver):
     def __init__(self, device, baud_rate=115200, log=None, debug=False):

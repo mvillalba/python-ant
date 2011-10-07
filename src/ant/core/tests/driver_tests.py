@@ -27,6 +27,7 @@ import unittest
 
 from ant.core.driver import *
 
+
 class DummyDriver(Driver):
     def _open(self):
         pass
@@ -39,6 +40,7 @@ class DummyDriver(Driver):
 
     def _write(self, data):
         return len(data)
+
 
 class DriverTest(unittest.TestCase):
     def setUp(self):
@@ -77,6 +79,7 @@ class DriverTest(unittest.TestCase):
         self.assertRaises(DriverError, self.driver.write, '')
         self.assertEquals(self.driver.write('\xFF' * 10), 10)
         self.driver.close()
+
 
 # How do you even test this without hardware?
 class USB1DriverTest(unittest.TestCase):

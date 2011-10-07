@@ -28,10 +28,11 @@ import datetime
 
 import msgpack
 
-EVENT_OPEN=0x01
-EVENT_CLOSE=0x02
-EVENT_READ=0x03
-EVENT_WRITE=0x04
+EVENT_OPEN = 0x01
+EVENT_CLOSE = 0x02
+EVENT_READ = 0x03
+EVENT_WRITE = 0x04
+
 
 class LogReader(object):
     def __init__(self, filename):
@@ -69,6 +70,7 @@ class LogReader(object):
         except StopIteration:
             return None
 
+
 class LogWriter(object):
     def __init__(self, filename=''):
         self.packer = msgpack.Packer()
@@ -91,7 +93,7 @@ class LogWriter(object):
         self.is_open = True
         self.packer = msgpack.Packer()
 
-        header = ['ANT-LOG', 0x01] # [MAGIC, VERSION]
+        header = ['ANT-LOG', 0x01]  # [MAGIC, VERSION]
         self.fd.write(self.packer.pack(header))
 
     def close(self):
@@ -120,4 +122,3 @@ class LogWriter(object):
 
     def logWrite(self, data):
         self._logEvent(EVENT_WRITE, data)
-

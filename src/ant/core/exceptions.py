@@ -36,3 +36,6 @@ class MessageError(ANTException):
 
 class NodeError(ANTException):
     pass
+
+class ChannelError(ANTException):
+    pass

@@ -50,7 +50,7 @@ stick.write(msg.encode())
 if evm.waitForAck(msg) != RESPONSE_NO_ERROR:
     sys.exit()
 
-# Now set the channel id for pairing with an ANT+ bike cadence/speed sensor
+# Now set the channel id for pairing with an ANT+ heart rate monitor
 msg = ChannelIDMessage(device_type=120)
 stick.write(msg.encode())
 if evm.waitForAck(msg) != RESPONSE_NO_ERROR:

@@ -29,12 +29,12 @@ antnode = node.Node(stick)
 antnode.start()
 
 # Setup channel
-key = node.NetworkKey('ANT+', NETKEY)
+key = node.NetworkKey('N:ANT+', NETKEY)
 antnode.setNetworkKey(0, key)
 channel = antnode.getFreeChannel()
-channel.setName('HRM')
-channel.assign(key, CHANNEL_BROADCAST_RECEIVE)
-channel.setID(DEVICE_SEARCH, 120, TRANSFER_PAIRING)
+channel.name = 'C:HRM'
+channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_RECEIVE)
+channel.setID(120, 0, 0)
 channel.setSearchTimeout(TIMEOUT_NEVER)
 channel.setPeriod(8070)
 channel.setFrequency(57)
@@ -43,11 +43,11 @@ channel.open()
 # Setup callback
 # Note: We could also register an event listener for non-channel events by
 # calling registerEventListener() on antnode rather than channel.
-channel.registerCallback(callback)
+channel.registerCallback(HRMListener())
 
 # Wait
 print "Listening for HR monitor events (120 seconds)..."
-time.sleep(120)
+time.sleep(5)
 
 # Shutdown
 channel.close()

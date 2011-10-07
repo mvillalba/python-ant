@@ -137,7 +137,12 @@ class EventMachine(object):
         self.callbacks_lock.acquire()
         if callback not in self.callbacks:
             self.callbacks.append(callback)
+        self.callbacks_lock.release()
 
+    def removeCallback(self, callback):
+        self.callbacks_lock.acquire()
+        if callback in self.callbacks:
+            self.callbacks.remove(callback)
         self.callbacks_lock.release()
 
     def waitForAck(self, msg):

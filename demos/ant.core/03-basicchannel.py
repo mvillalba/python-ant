@@ -21,20 +21,20 @@ antnode = node.Node(stick)
 antnode.start()
 
 # Set network key
-key = node.NetworkKey('ANT+', NETKEY)
+key = node.NetworkKey('N:ANT+', NETKEY)
 antnode.setNetworkKey(0, key)
 
 # Get the first unused channel. Returns an instance of the node.Channel class.
 channel = antnode.getFreeChannel()
 
 # Let's give our channel a nickname
-channel.setName('HRM')
+channel.name = 'C:HRM'
 
 # Initialize it as a receiving channel using our network key
-channel.assign(key, CHANNEL_BROADCAST_RECEIVE)
+channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_RECEIVE)
 
 # Now set the channel id for pairing with an ANT+ HR monitor
-channel.setID(DEVICE_SEARCH, 120, TRANSFER_PAIRING)
+channel.setID(120, 0, 0)
 
 # Listen forever and ever (not really, but for a long time)
 channel.setSearchTimeout(TIMEOUT_NEVER)

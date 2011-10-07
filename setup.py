@@ -38,7 +38,7 @@ def read(fname):
 
 setup(
     name='ant',
-    version='0.1.0',
+    version='develop',
     url='http://www.github.com/mvillalba/python-ant',
     license='MIT',
     description='Python implementation of the ANT, ANT+, and ANT-FS ' \
@@ -62,7 +62,7 @@ setup(
     package_dir={'': 'src'},
     install_requires=[
         'distribute',
-        'pyserial == 2.5',
-        'msgpack-python == 0.1.10'
+        'pyserial',
+        'msgpack-python'
     ],
 )

@@ -1,0 +1,6 @@
+include demos/*/*.py
+include src/ant/*/tests/*.py
+include LICENSE
+include README.md
+include CHANGES.md
+include DEVELOP.md

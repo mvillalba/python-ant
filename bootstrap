@@ -1,0 +1,23 @@
+#!/bin/sh
+# Take out the trash
+echo "Taking out the trash..."
+rm -rf virtualenv.py bootstrap.py bin develop-eggs eggs include lib parts .installed.cfg dist build downloads lib64 src/ant.egg-info docs/build docs/source/.buildinfo src/.coverage
+
+# Fetch bootstrap files
+echo "Fetching bootstrap scripts..."
+wget -q https://raw.github.com/pypa/virtualenv/develop/virtualenv.py
+wget -q http://svn.zope.org/repos/main/zc.buildout/trunk/bootstrap/bootstrap.py
+
+# Create and activate isolated Python environment
+echo "Creating isolated Python environment..."
+python virtualenv.py --no-site-packages --distribute --prompt=\[ant\] .
+rm -f *.tar.*
+source bin/activate
+
+# Let zc.buildout do it's thing
+echo "Initializing buildout..."
+python bootstrap.py -d
+
+
+# Done
+echo "All done. Go ahead and run buildout."

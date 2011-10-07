@@ -39,7 +39,7 @@ http://repo.or.cz/w/python-ant.git
 Release Checklist
 -----------------
  * Deactivate virtualenv environment, if active
- * Clone upstream to clean directory
+ * Clone upstream to clean directory (setup all remotes!)
  * Bootstrap environment
  * Start release branch (git-flow)
  * Set/check version number (setup.py, project's __init__.py, docs)
@@ -68,7 +68,12 @@ Release Checklist
  * Re-test release in a clean environment, installing from the cheeseshop
  * Finish git-flow release and add release tag and commit release
  * Push upstream (GitHub master, gitorious backup, odin backup)
- * Upload dist files to GitHub
+   % git push --all all && git push --tags all
+ * Close old feature branches (GitHub)
+   % git push origin :feature/{NAME-HERE}
+ * Upload dist files to GitHub and download them to check integrity
+ * Unfreeze version numbers from setup.py and buildout.cfg
+ * Set version number to "develop" (setup.py, project's __init__.py, docs)
  * Upload built documentation
  * Make public announcement, if necessary
 

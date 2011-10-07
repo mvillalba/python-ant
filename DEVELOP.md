@@ -54,7 +54,7 @@ Release Checklist
  * Check bug database for open issues/bugs
  * Build documentation
  * Check documentation (coverage, grammar, contents, etc)
- * Update CHANGES
+ * Update CHANGES.md
  * Update copyright statements if new year
  * Update setup.py
  * Create distribution bundles
@@ -62,11 +62,12 @@ Release Checklist
  * Check dist/* files (no nuclear launch codes, all files present, do they work
    in a separate virtualenv with pip?)
  * Upload to PyPI
-   % buildout setup . register upload
+   % buildout setup . sdist bdist_egg register upload
  * Check package page in PyPI (readme, download links)
+ * If first release, delete dummy "develop" version from PyPI
  * Re-test release in a clean environment, installing from the cheeseshop
  * Finish git-flow release and add release tag and commit release
- * Push upstream (GitHub master, gitorious backup)
+ * Push upstream (GitHub master, gitorious backup, odin backup)
  * Upload dist files to GitHub
  * Upload built documentation
  * Make public announcement, if necessary

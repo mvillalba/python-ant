@@ -28,6 +28,11 @@ import os
 from setuptools import setup, find_packages
 
 
+def demos():
+    top = os.listdir('demos')
+    for topdir in top:
+        demos = os.listdir('demos/{0}'.format(topdir))
+
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
@@ -52,8 +57,12 @@ setup(
         "Topic :: Communications",
         "Topic :: Communications :: File Sharing",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        ],
+    ],
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    install_requires=['distribute', 'pyserial', 'msgpack-python'],
+    install_requires=[
+        'distribute',
+        'pyserial == 2.5',
+        'msgpack-python == 0.1.10'
+    ],
 )

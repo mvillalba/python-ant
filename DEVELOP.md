@@ -38,15 +38,16 @@ http://repo.or.cz/w/python-ant.git
 
 Release Checklist
 -----------------
+ * Deactivate virtualenv environment, if active
  * Clone upstream to clean directory
  * Bootstrap environment
  * Start release branch (git-flow)
+ * Set/check version number (setup.py, project's __init__.py, docs)
  * Run pylint
  * Run importchecker
    % importchecker src
  * Run pep8
    % pep8 -r src --count --statistics
- * Set/check version number (setup.py, project's __init__.py, docs)
  * Run test suite and check test coverage
    % nosetests --with-coverage --cover-inclusive --cover-erase
  * Freeze dependencies' version numbers in buildout.cfg and setup.py
@@ -57,9 +58,9 @@ Release Checklist
  * Update copyright statements if new year
  * Update setup.py
  * Create distribution bundles
-   % buildout setup . sdist bdist bdist_egg
- * Check dist/* files (no plain text root passwords, all files present, do
-   they work in a separate virtualenv with pip? do tests still pass?)
+   % buildout setup . sdist bdist_egg
+ * Check dist/* files (no nuclear launch codes, all files present, do they work
+   in a separate virtualenv with pip?)
  * Upload to PyPI
    % buildout setup . register upload
  * Check package page in PyPI (readme, download links)

@@ -28,6 +28,7 @@ import struct
 from ant.core.exceptions import MessageError
 from ant.core.constants import *
 
+
 class Message(object):
     def __init__(self, type_=0x00, payload=''):
         self.setType(type_)
@@ -91,12 +92,12 @@ class Message(object):
         if len(raw) < (length + 4):
             raise MessageError('Could not decode (message is incomplete).')
 
-
         self.setType(type_)
         self.setPayload(raw[3:length + 3])
 
         if self.getChecksum() != ord(raw[length + 3]):
-            raise MessageError('Could not decode (bad checksum).', internal='CHECKSUM')
+            raise MessageError('Could not decode (bad checksum).',
+                               internal='CHECKSUM')
 
         return self.getSize()
 
@@ -154,6 +155,7 @@ class Message(object):
         msg.setPayload(self.getPayload())
         return msg
 
+
 class ChannelMessage(Message):
     def __init__(self, type_, payload='', number=0x00):
         Message.__init__(self, type_, '\x00' + payload)
@@ -169,11 +171,13 @@ class ChannelMessage(Message):
 
         self.payload[0] = chr(number)
 
+
 # Config messages
 class ChannelUnassignMessage(ChannelMessage):
     def __init__(self, number=0x00):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_UNASSIGN,
                          number=number)
+
 
 class ChannelAssignMessage(ChannelMessage):
     def __init__(self, number=0x00, type_=0x00, network=0x00):
@@ -192,6 +196,7 @@ class ChannelAssignMessage(ChannelMessage):
 
     def setNetworkNumber(self, number):
         self.payload[2] = chr(number)
+
 
 class ChannelIDMessage(ChannelMessage):
     def __init__(self, number=0x00, device_number=0x0000, device_type=0x00,
@@ -220,6 +225,7 @@ class ChannelIDMessage(ChannelMessage):
     def setTransmissionType(self, trans_type):
         self.payload[4] = chr(trans_type)
 
+
 class ChannelPeriodMessage(ChannelMessage):
     def __init__(self, number=0x00, period=8192):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_PERIOD,
@@ -231,6 +237,7 @@ class ChannelPeriodMessage(ChannelMessage):
 
     def setChannelPeriod(self, period):
         self.payload[1:3] = struct.pack('<H', period)
+
 
 class ChannelSearchTimeoutMessage(ChannelMessage):
     def __init__(self, number=0x00, timeout=0xFF):
@@ -244,6 +251,7 @@ class ChannelSearchTimeoutMessage(ChannelMessage):
     def setTimeout(self, timeout):
         self.payload[1] = chr(timeout)
 
+
 class ChannelFrequencyMessage(ChannelMessage):
     def __init__(self, number=0x00, frequency=66):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_FREQUENCY,
@@ -256,6 +264,7 @@ class ChannelFrequencyMessage(ChannelMessage):
     def setFrequency(self, frequency):
         self.payload[1] = chr(frequency)
 
+
 class ChannelTXPowerMessage(ChannelMessage):
     def __init__(self, number=0x00, power=0x00):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_TX_POWER,
@@ -266,6 +275,7 @@ class ChannelTXPowerMessage(ChannelMessage):
 
     def setPower(self, power):
         self.payload[1] = chr(power)
+
 
 class NetworkKeyMessage(Message):
     def __init__(self, number=0x00, key='\x00' * 8):
@@ -285,6 +295,7 @@ class NetworkKeyMessage(Message):
     def setKey(self, key):
         self.payload[1:] = key
 
+
 class TXPowerMessage(Message):
     def __init__(self, power=0x00):
         Message.__init__(self, type_=MESSAGE_TX_POWER, payload='\x00\x00')
@@ -296,20 +307,24 @@ class TXPowerMessage(Message):
     def setPower(self, power):
         self.payload[1] = chr(power)
 
+
 # Control messages
 class SystemResetMessage(Message):
     def __init__(self):
         Message.__init__(self, type_=MESSAGE_SYSTEM_RESET, payload='\x00')
+
 
 class ChannelOpenMessage(ChannelMessage):
     def __init__(self, number=0x00):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_OPEN,
                                 number=number)
 
+
 class ChannelCloseMessage(ChannelMessage):
     def __init__(self, number=0x00):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_CLOSE,
                                 number=number)
+
 
 class ChannelRequestMessage(ChannelMessage):
     def __init__(self, number=0x00, message_id=MESSAGE_CHANNEL_STATUS):
@@ -327,8 +342,10 @@ class ChannelRequestMessage(ChannelMessage):
 
         self.payload[1] = chr(message_id)
 
+
 class RequestMessage(ChannelRequestMessage):
     pass
+
 
 # Data messages
 class ChannelBroadcastDataMessage(ChannelMessage):
@@ -336,10 +353,12 @@ class ChannelBroadcastDataMessage(ChannelMessage):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_BROADCAST_DATA,
                                 payload=data, number=number)
 
+
 class ChannelAcknowledgedDataMessage(ChannelMessage):
     def __init__(self, number=0x00, data='\x00' * 7):
         ChannelMessage.__init__(self, type_=MESSAGE_CHANNEL_ACKNOWLEDGED_DATA,
                                 payload=data, number=number)
+
 
 class ChannelBurstDataMessage(ChannelMessage):
     def __init__(self, number=0x00, data='\x00' * 7):
@@ -395,6 +414,7 @@ class ChannelStatusMessage(ChannelMessage):
 
 #class ChannelIDMessage(ChannelMessage):
 
+
 class VersionMessage(Message):
     def __init__(self, version='\x00' * 9):
         Message.__init__(self, type_=MESSAGE_VERSION, payload='\x00' * 9)
@@ -409,6 +429,7 @@ class VersionMessage(Message):
                                '(expected 9 bytes).')
 
         self.setPayload(version)
+
 
 class CapabilitiesMessage(Message):
     def __init__(self, max_channels=0x00, max_nets=0x00, std_opts=0x00,
@@ -473,6 +494,7 @@ class CapabilitiesMessage(Message):
             self.payload.append('\x00')
         self.payload[4] = chr(num)
 
+
 class SerialNumberMessage(Message):
     def __init__(self, serial='\x00' * 4):
         Message.__init__(self, type_=MESSAGE_SERIAL_NUMBER)
@@ -487,4 +509,3 @@ class SerialNumberMessage(Message):
                                '(expected 4 bytes).')
 
         self.setPayload(serial)
-

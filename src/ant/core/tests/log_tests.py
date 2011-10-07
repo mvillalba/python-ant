@@ -23,11 +23,12 @@
 #
 ##############################################################################
 
-LOG_LOCATION='/tmp/python-ant.logtest.ant'
+LOG_LOCATION = '/tmp/python-ant.logtest.ant'
 
 import unittest
 
 from ant.core.log import *
+
 
 class LogReaderTest(unittest.TestCase):
     def setUp(self):
@@ -77,6 +78,7 @@ class LogReaderTest(unittest.TestCase):
         self.assertEquals(t5[0], EVENT_CLOSE)
         self.assertTrue(isinstance(t1[1], int))
         self.assertEquals(len(t5), 2)
+
 
 class LogWriterTest(unittest.TestCase):
     def setUp(self):

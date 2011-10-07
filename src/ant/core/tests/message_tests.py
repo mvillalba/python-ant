@@ -27,6 +27,7 @@ import unittest
 
 from ant.core.message import *
 
+
 class MessageTest(unittest.TestCase):
     def setUp(self):
         self.message = Message()
@@ -51,7 +52,7 @@ class MessageTest(unittest.TestCase):
         self.assertEquals(self.message.getChecksum(), 0xE5)
 
     def test_getSize(self):
-        self.message.setPayload('\x11'*7)
+        self.message.setPayload('\x11' * 7)
         self.assertEquals(self.message.getSize(), 11)
 
     def test_encode(self):
@@ -83,6 +84,7 @@ class MessageTest(unittest.TestCase):
         self.assertRaises(MessageError, self.message.getHandler,
                           '\xA4\x05\x42\x00\x00\x00\x00')
 
+
 class ChannelMessageTest(unittest.TestCase):
     def setUp(self):
         self.message = ChannelMessage(type_=MESSAGE_SYSTEM_RESET)
@@ -92,9 +94,11 @@ class ChannelMessageTest(unittest.TestCase):
         self.message.setChannelNumber(3)
         self.assertEquals(self.message.getChannelNumber(), 3)
 
+
 class ChannelUnassignMessageTest(unittest.TestCase):
     # No currently defined methods need testing
     pass
+
 
 class ChannelAssignMessageTest(unittest.TestCase):
     def setUp(self):
@@ -113,6 +117,7 @@ class ChannelAssignMessageTest(unittest.TestCase):
         self.message.setChannelType(0x02)
         self.message.setNetworkNumber(0x03)
         self.assertEquals(self.message.getPayload(), '\x01\x02\x03')
+
 
 class ChannelIDMessageTest(unittest.TestCase):
     def setUp(self):
@@ -137,6 +142,7 @@ class ChannelIDMessageTest(unittest.TestCase):
         self.message.setTransmissionType(0x05)
         self.assertEquals(self.message.getPayload(), '\x01\x02\x03\x04\x05')
 
+
 class ChannelPeriodMessageTest(unittest.TestCase):
     def setUp(self):
         self.message = ChannelPeriodMessage()
@@ -149,6 +155,7 @@ class ChannelPeriodMessageTest(unittest.TestCase):
         self.message.setChannelNumber(0x01)
         self.message.setChannelPeriod(0x0302)
         self.assertEquals(self.message.getPayload(), '\x01\x02\x03')
+
 
 class ChannelSearchTimeoutMessageTest(unittest.TestCase):
     def setUp(self):
@@ -163,6 +170,7 @@ class ChannelSearchTimeoutMessageTest(unittest.TestCase):
         self.message.setTimeout(0x02)
         self.assertEquals(self.message.getPayload(), '\x01\x02')
 
+
 class ChannelFrequencyMessageTest(unittest.TestCase):
     def setUp(self):
         self.message = ChannelFrequencyMessage()
@@ -176,6 +184,7 @@ class ChannelFrequencyMessageTest(unittest.TestCase):
         self.message.setFrequency(0x02)
         self.assertEquals(self.message.getPayload(), '\x01\x02')
 
+
 class ChannelTXPowerMessageTest(unittest.TestCase):
     def setUp(self):
         self.message = ChannelTXPowerMessage()
@@ -188,6 +197,7 @@ class ChannelTXPowerMessageTest(unittest.TestCase):
         self.message.setChannelNumber(0x01)
         self.message.setPower(0x02)
         self.assertEquals(self.message.getPayload(), '\x01\x02')
+
 
 class NetworkKeyMessageTest(unittest.TestCase):
     def setUp(self):
@@ -204,7 +214,9 @@ class NetworkKeyMessageTest(unittest.TestCase):
     def test_payload(self):
         self.message.setNumber(0x01)
         self.message.setKey('\x02\x03\x04\x05\x06\x07\x08\x09')
-        self.assertEquals(self.message.getPayload(), '\x01\x02\x03\x04\x05\x06\x07\x08\x09')
+        self.assertEquals(self.message.getPayload(),
+                          '\x01\x02\x03\x04\x05\x06\x07\x08\x09')
+
 
 class TXPowerMessageTest(unittest.TestCase):
     def setUp(self):
@@ -218,17 +230,21 @@ class TXPowerMessageTest(unittest.TestCase):
         self.message.setPower(0x01)
         self.assertEquals(self.message.getPayload(), '\x00\x01')
 
+
 class SystemResetMessageTest(unittest.TestCase):
     # No currently defined methods need testing
     pass
+
 
 class ChannelOpenMessageTest(unittest.TestCase):
     # No currently defined methods need testing
     pass
 
+
 class ChannelCloseMessageTest(unittest.TestCase):
     # No currently defined methods need testing
     pass
+
 
 class ChannelRequestMessageTest(unittest.TestCase):
     def setUp(self):
@@ -244,17 +260,21 @@ class ChannelRequestMessageTest(unittest.TestCase):
         self.message.setMessageID(0x02)
         self.assertEquals(self.message.getPayload(), '\x01\x02')
 
+
 class ChannelBroadcastDataMessageTest(unittest.TestCase):
     # No currently defined methods need testing
     pass
+
 
 class ChannelAcknowledgedDataMessageTest(unittest.TestCase):
     # No currently defined methods need testing
     pass
 
+
 class ChannelBurstDataMessageTest(unittest.TestCase):
     # No currently defined methods need testing
     pass
+
 
 class ChannelEventMessageTest(unittest.TestCase):
     def setUp(self):
@@ -276,6 +296,7 @@ class ChannelEventMessageTest(unittest.TestCase):
         self.message.setMessageCode(0x03)
         self.assertEquals(self.message.getPayload(), '\x01\x02\x03')
 
+
 class ChannelStatusMessageTest(unittest.TestCase):
     def setUp(self):
         self.message = ChannelStatusMessage()
@@ -290,6 +311,7 @@ class ChannelStatusMessageTest(unittest.TestCase):
         self.message.setStatus(0x02)
         self.assertEquals(self.message.getPayload(), '\x01\x02')
 
+
 class VersionMessageTest(unittest.TestCase):
     def setUp(self):
         self.message = VersionMessage()
@@ -302,6 +324,7 @@ class VersionMessageTest(unittest.TestCase):
     def test_payload(self):
         self.message.setVersion('\x01' * 9)
         self.assertEquals(self.message.getPayload(), '\x01' * 9)
+
 
 class CapabilitiesMessageTest(unittest.TestCase):
     def setUp(self):
@@ -342,6 +365,7 @@ class CapabilitiesMessageTest(unittest.TestCase):
         self.message.setAdvOptions2(0x05)
         self.assertEquals(self.message.getPayload(), '\x01\x02\x03\x04\x05')
 
+
 class SerialNumberMessageTest(unittest.TestCase):
     def setUp(self):
         self.message = SerialNumberMessage()
@@ -355,4 +379,3 @@ class SerialNumberMessageTest(unittest.TestCase):
     def test_payload(self):
         self.message.setSerialNumber('\x01\x02\x03\x04')
         self.assertEquals(self.message.getPayload(), '\x01\x02\x03\x04')
-

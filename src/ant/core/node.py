@@ -32,6 +32,7 @@ from ant.core.exceptions import *
 from ant.core import message
 from ant.core import event
 
+
 class NetworkKey(object):
     def __init__(self, name=None, key='\x00' * 8):
         self.key = key
@@ -40,6 +41,7 @@ class NetworkKey(object):
         else:
             self.name = str(uuid.uuid4())
         self.number = 0
+
 
 class Channel(event.EventCallback):
     cb_lock = thread.allocate_lock()
@@ -126,13 +128,15 @@ class Channel(event.EventCallback):
 
     def process(self, msg):
         self.cb_lock.acquire()
-        if isinstance(msg, message.ChannelMessage) and msg.getChannelNumber() == self.number:
+        if isinstance(msg, message.ChannelMessage) and \
+        msg.getChannelNumber() == self.number:
             for callback in self.cb:
                 try:
                     callback.process(msg)
                 except:
-                    pass # Who cares?
+                    pass  # Who cares?
         self.cb_lock.release()
+
 
 class Node(event.EventCallback):
     node_lock = thread.allocate_lock()

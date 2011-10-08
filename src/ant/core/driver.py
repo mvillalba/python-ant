@@ -23,11 +23,13 @@
 #
 ##############################################################################
 
+import time
 import thread
 
 import serial
 
 from ant.core.exceptions import DriverError
+from ant.core import message
 
 
 class Driver(object):
@@ -38,6 +40,7 @@ class Driver(object):
         self.debug = debug
         self.log = log
         self.is_open = False
+        self.buffer_ = ''
 
     def isOpen(self):
         self._lock.acquire()
@@ -73,54 +76,74 @@ class Driver(object):
         finally:
             self._lock.release()
 
-    def read(self, count):
+    def read(self):
         self._lock.acquire()
 
         try:
             if not self.is_open:
                 raise DriverError("Could not read from device (not open).")
             if count <= 0:
-                raise DriverError("Could not read from device (zero request).")
+                raise DriverError("Could not read from device "
+                                  "(zero request).")
 
-            data = self._read(count)
+            msg = None
+            while True:
+                self.buffer_ = self._read(20)
+                if len(self.buffer_) == 0:
+                    time.sleep(0.002)
+                    continue
+
+                while True:
+                    hf = message.Message()
+                    try:
+                        msg = hf.getHandler(buffer_)
+                        self.buffer_ = self.buffer_[
+                                       len(msg.getPayload()) + 4:]
+                        break
+                    except MessageError, e:
+                        if e.internal == "CHECKSUM":
+                            self.buffer_ = self.buffer_[
+                                           ord(self.buffer_[1]) + 4:]
+                        else:
+                            break
+
+            if not msg:
+                return msg
+
             if self.log:
-                self.log.logRead(data)
-
+                self.log.logRead(msg)
             if self.debug:
                 self._dump(data, 'READ')
         finally:
             self._lock.release()
 
-        return data
+        return msg
 
-    def write(self, data):
+    def write(self, msg):
         self._lock.acquire()
-
         try:
             if not self.is_open:
                 raise DriverError("Could not write to device (not open).")
-            if len(data) <= 0:
-                raise DriverError("Could not write to device (no data).")
+            if not isinstance(msg, message.Message):
+                raise DriverError("Could not write to device "
+                                  "(not a message).")
 
+            self._write(msg.encode())
             if self.debug:
-                self._dump(data, 'WRITE')
-
-            ret = self._write(data)
+                self._dump(msg, 'WRITE')
             if self.log:
-                self.log.logWrite(data[0:ret])
+                self.log.logWrite(msg)
         finally:
             self._lock.release()
 
-        return ret
+        return
 
-    def _dump(self, data, title):
-        if len(data) == 0:
-            return
-
+    def _dump(self, msg, title):
         print '========== [{0}] =========='.format(title)
 
         length = 8
         line = 0
+        data = msg.encode()
         while data:
             row = data[:length]
             data = data[length:]
@@ -135,10 +158,10 @@ class Driver(object):
     def _close(self):
         raise DriverError("Not Implemented")
 
-    def _read(self, count):
+    def _read(self):
         raise DriverError("Not Implemented")
 
-    def _write(self, data):
+    def _write(self, msg):
         raise DriverError("Not Implemented")
 
 
@@ -166,10 +189,13 @@ class USB1Driver(Driver):
         return self._serial.read(count)
 
     def _write(self, data):
-        try:
-            count = self._serial.write(data)
-            self._serial.flush()
-        except serial.SerialTimeoutException, e:
-            raise DriverError(str(e))
-
-        return count
+        count = 0
+        while True:
+            try:
+                count += self._serial.write(data)
+                self._serial.flush()
+                if len(data) == count:
+                    break
+            except serial.SerialTimeoutException, e:
+                raise DriverError(str(e))
+        return

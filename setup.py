@@ -28,11 +28,6 @@ import os
 from setuptools import setup, find_packages
 
 
-def demos():
-    top = os.listdir('demos')
-    for topdir in top:
-        demos = os.listdir('demos/{0}'.format(topdir))
-
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 

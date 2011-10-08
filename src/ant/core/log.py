@@ -28,6 +28,8 @@ import datetime
 
 import msgpack
 
+from ant.core import message
+
 EVENT_OPEN = 0x01
 EVENT_CLOSE = 0x02
 EVENT_READ = 0x03
@@ -66,7 +68,8 @@ class LogReader(object):
 
     def read(self):
         try:
-            return self.unpacker.unpack()
+            msg = message.Message()
+            return msg.getHandler(self.unpacker.unpack())
         except StopIteration:
             return None
 
@@ -117,8 +120,8 @@ class LogWriter(object):
     def logClose(self):
         self._logEvent(EVENT_CLOSE)
 
-    def logRead(self, data):
-        self._logEvent(EVENT_READ, data)
+    def logRead(self, msg):
+        self._logEvent(EVENT_READ, msg.encode())
 
-    def logWrite(self, data):
-        self._logEvent(EVENT_WRITE, data)
+    def logWrite(self, msg):
+        self._logEvent(EVENT_WRITE, msg.encode())

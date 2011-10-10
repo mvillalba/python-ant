@@ -47,7 +47,7 @@ channel.registerCallback(HRMListener())
 
 # Wait
 print "Listening for HR monitor events (120 seconds)..."
-time.sleep(5)
+time.sleep(120)
 
 # Shutdown
 channel.close()

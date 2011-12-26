@@ -58,6 +58,7 @@ setup(
     install_requires=[
         'distribute',
         'pyserial',
+        'pyusb',
         'msgpack-python'
     ],
 )

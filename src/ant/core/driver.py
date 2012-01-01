@@ -25,9 +25,15 @@
 
 import thread
 
+# USB1 driver uses a USB<->Serial bridge
 import serial
+# USB2 driver uses direct USB connection. Requires PyUSB
+import usb.core
+import usb.util
 
 from ant.core.exceptions import DriverError
+
+from array import *
 
 
 class Driver(object):
@@ -171,5 +177,61 @@ class USB1Driver(Driver):
             self._serial.flush()
         except serial.SerialTimeoutException, e:
             raise DriverError(str(e))
+
+        return count
+
+
+class USB2Driver(Driver):
+    def _open(self):
+        # Most of this is straight from the PyUSB example documentation		
+        dev = usb.core.find(idVendor=0x0fcf, idProduct=0x1008)
+
+        if dev is None:
+            raise DriverError('Could not open device (not found)')
+        dev.set_configuration()
+        cfg = dev.get_active_configuration()
+        interface_number = cfg[(0,0)].bInterfaceNumber
+        alternate_setting = usb.control.get_interface(dev, interface_number)
+        intf = usb.util.find_descriptor(
+            cfg, bInterfaceNumber = interface_number,
+            AlternateSetting = alternate_setting
+        )
+        usb.util.claim_interface(dev, interface_number)
+        ep_out = usb.util.find_descriptor(
+            intf,
+            custom_match = \
+            lambda e: \
+                usb.util.endpoint_direction(e.bEndpointAddress) == \
+                usb.util.ENDPOINT_OUT
+        )
+        assert ep_out is not None
+        ep_in = usb.util.find_descriptor(
+            intf,
+            custom_match = \
+            lambda e: \
+                usb.util.endpoint_direction(e.bEndpointAddress) == \
+                usb.util.ENDPOINT_IN
+        )
+        assert ep_in is not None
+        self._ep_out = ep_out
+        self._ep_in = ep_in
+        self._dev = dev
+        self._int = interface_number
+
+    def _close(self):
+        usb.util.release_interface(self._dev, self._int)
+
+    def _read(self, count):
+        arr_inp = array('B')
+        try:
+            arr_inp = self._ep_in.read(count)
+        except usb.core.USBError:
+            # Timeout errors seem to occasionally be expected
+            pass
+
+        return arr_inp.tostring()
+
+    def _write(self, data):
+        count = self._ep_out.write(data)
 
         return count

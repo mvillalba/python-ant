@@ -30,6 +30,7 @@ import serial
 # USB2 driver uses direct USB connection. Requires PyUSB
 import usb.core
 import usb.util
+import usb.control
 
 from ant.core.exceptions import DriverError
 

@@ -194,7 +194,7 @@ class USB2Driver(Driver):
         alternate_setting = usb.control.get_interface(dev, interface_number)
         intf = usb.util.find_descriptor(
             cfg, bInterfaceNumber = interface_number,
-            AlternateSetting = alternate_setting
+            bAlternateSetting = alternate_setting
         )
         usb.util.claim_interface(dev, interface_number)
         ep_out = usb.util.find_descriptor(

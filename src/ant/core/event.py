@@ -41,7 +41,7 @@ from ant.core.exceptions import MessageError
 
 def ProcessBuffer(buffer_):
     messages = []
-
+    
     while True:
         hf = Message()
         try:
@@ -63,8 +63,9 @@ def EventPump(evm):
     evm.pump_lock.release()
 
     go = True
-    buffer_ = ''
+    
     while go:
+        buffer_ = ''
         evm.running_lock.acquire()
         if not evm.running:
             go = False

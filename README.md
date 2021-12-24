@@ -24,7 +24,7 @@ You can reach me via e-Mail and Google Talk/Jabber at:
 
 Documentation
 -------------
-Documentation will be a bit scarse for the time being, but everything public
+Documentation will be a bit scarce for the time being, but everything public
 should have at least a docstring by the time I make the first stable release.
 
 

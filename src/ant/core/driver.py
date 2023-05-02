@@ -123,7 +123,7 @@ class Driver(object):
         if len(data) == 0:
             return
 
-        print '========== [{0}] =========='.format(title)
+        print('========== [{0}] =========='.format(title)
 
         length = 8
         line = 0
@@ -131,9 +131,9 @@ class Driver(object):
             row = data[:length]
             data = data[length:]
             hex_data = ['%02X' % ord(byte) for byte in row]
-            print '%04X' % line, ' '.join(hex_data)
+            print('%04X' % line, ' '.join(hex_data))
 
-        print ''
+        print('')
 
     def _open(self):
         raise DriverError("Not Implemented")

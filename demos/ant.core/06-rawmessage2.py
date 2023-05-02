@@ -30,11 +30,11 @@ stick.write(msg.encode())
 hdlfinder = message.Message()
 capmsg = hdlfinder.getHandler(stick.read(8))
 
-print 'Std Options:', capmsg.getStdOptions()
-print 'Adv Options:', capmsg.getAdvOptions()
-print 'Adv Options 2:', capmsg.getAdvOptions2()
-print 'Max Channels:', capmsg.getMaxChannels()
-print 'Max Networks:', capmsg.getMaxNetworks()
+print('Std Options:', capmsg.getStdOptions())
+print('Adv Options:', capmsg.getAdvOptions())
+print('Adv Options 2:', capmsg.getAdvOptions2())
+print('Max Channels:', capmsg.getMaxChannels())
+print('Max Networks:', capmsg.getMaxNetworks())
 
 # Shutdown
 stick.close()

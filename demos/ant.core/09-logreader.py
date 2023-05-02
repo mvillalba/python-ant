@@ -11,7 +11,7 @@ from config import *
 
 # Open log
 if len(sys.argv) != 2:
-    print "Usage: {0} file.ant".format(sys.argv[0])
+    print("Usage: {0} file.ant".format(sys.argv[0])
     sys.exit()
 
 lr = log.LogReader(sys.argv[1])
@@ -27,7 +27,7 @@ while (event != None):
     elif event[0] == log.EVENT_WRITE:
         title = 'EVENT_WRITE'
 
-    print '========== [{0}:{1}] =========='.format(title, event[1])
+    print('========== [{0}:{1}] =========='.format(title, event[1]))
     if event[0] == log.EVENT_READ or event[0] == log.EVENT_WRITE:
         length = 8
         line = 0
@@ -36,7 +36,7 @@ while (event != None):
             row = data[:length]
             data = data[length:]
             hex_data = ['%02X' % ord(byte) for byte in row]
-            print '%04X' % line, ' '.join(hex_data)
+            print('%04X' % line, ' '.join(hex_data))
 
-    print ''
+    print('')
     event = lr.read()

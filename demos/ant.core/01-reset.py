@@ -21,7 +21,7 @@ antnode = node.Node(stick)
 try:
     antnode.start()
 except driver.DriverError, e:
-    print e
+    print(e)
     sys.exit()
 
 # At any point in our node's life, we could manually call reset() to re-

@@ -15,5 +15,5 @@ DEBUG = True
 LOG = log.LogWriter()
 
 # ========== DO NOT CHANGE ANYTHING BELOW THIS LINE ==========
-print "Using log file:", LOG.filename
-print ""
+print("Using log file:", LOG.filename)
+print("")

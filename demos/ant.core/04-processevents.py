@@ -21,7 +21,7 @@ NETKEY = '\xB9\xA5\x21\xFB\xBD\x72\xC3\x45'
 class HRMListener(event.EventCallback):
     def process(self, msg):
         if isinstance(msg, message.ChannelBroadcastDataMessage):
-            print 'Heart Rate:', ord(msg.payload[-1])
+            print('Heart Rate:', ord(msg.payload[-1]))
 
 # Initialize
 stick = driver.USB1Driver(SERIAL, log=LOG, debug=DEBUG)
@@ -46,7 +46,7 @@ channel.open()
 channel.registerCallback(HRMListener())
 
 # Wait
-print "Listening for HR monitor events (120 seconds)..."
+print("Listening for HR monitor events (120 seconds)...")
 time.sleep(120)
 
 # Shutdown

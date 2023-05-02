@@ -48,7 +48,7 @@ channel.setFrequency(57)
 # Time to go live
 channel.open()
 
-print "Listening for HR monitor events (120 seconds)..."
+print("Listening for HR monitor events (120 seconds)...")
 time.sleep(120)
 
 # Shutdown channel

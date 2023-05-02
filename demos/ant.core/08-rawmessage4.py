@@ -19,10 +19,12 @@ NETKEY = '\xB9\xA5\x21\xFB\xBD\x72\xC3\x45'
 # Event callback
 class MyCallback(event.EventCallback):
     def process(self, msg):
-        print msg
+        print(msg
         if isinstance(msg, ChannelBroadcastDataMessage):
-            print 'Beat Count:', ord(msg.getPayload()[7])
-            print 'Heart Rate:', ord(msg.getPayload()[8])
+            print('Beat Count:', ord(msg.getPayload()[7]))
+            print('Heart Rate:', ord(msg.getPayload()[8]))
+        else
+            print('missing beat')
 
 # Initialize driver
 stick = driver.USB1Driver(SERIAL, log=LOG) # No debug, too much data
@@ -80,7 +82,7 @@ stick.write(msg.encode())
 if evm.waitForAck(msg) != RESPONSE_NO_ERROR:
     sys.exit()
 
-print "Listening for ANT events (120 seconds)..."
+print("Listening for ANT events (120 seconds)...")
 time.sleep(120)
 
 # Shutdown
